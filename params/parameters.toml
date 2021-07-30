@@ -4,7 +4,7 @@
 
 [iosevka]
 naming.copyright = 'Copyright 2015-2021, Renzhi Li (aka. Belleve Invis, belleve@typeof.net).'
-naming.licence = '''This font software is licenced under the SIL Open Font Licence, Version 1.1. This is licence is available with a FAQ at: http://scripts.sil.org/OFL. This font software is distributed on an 'AS IS' basis, without warranties or conditions of any kind, either express or implied. See the SIL Open Font licence for the specific language, permissions and limitations governing your use of this font software.'''
+naming.licence = '''This font software is licenced under the SIL Open Font Licence, Version 1.1. This licence is available with a FAQ at: http://scripts.sil.org/OFL. This font software is distributed on an 'AS IS' basis, without warranties or conditions of any kind, either express or implied. See the SIL Open Font licence for the specific language, permissions and limitations governing your use of this font software.'''
 naming.manufacturer = 'Belleve Invis'
 naming.designer = 'Belleve Invis'
 naming.description = 'Spatial efficient monospace font family for programming. Built from code. http://be5invis.github.io/Iosevka'
@@ -36,14 +36,16 @@ accentStackOffset = 160 # Offset when accent marks stack.
 overshoot = -8          # Vertical overshoot for arcs.
 overshootx = -8         # Horizontal overshoot for arcs.
 oxhook = -2             # Horizontal overshoot for hook tips.
-fovershoot = -40        # Overshoot of the top end of italic `f`.
+
+refJut = 85
 
 shoulderfineMin = 0.8
 
 isItalic = false   # Use italic shapes?
 isOblique = false  # Use oblique shapes?
 
-spacing = 1        # Spacing indicator
+spacing = 1         # Spacing indicator
+unitWidthScalar = 1 # Scalar of unit width, used in derived builds
 
 # Powerline-specific parameters
 powerlineScaleY = 1 # Vertical scale
@@ -74,6 +76,21 @@ diversityM  = 1
 diversityF  = 1
 diversityI  = 1
 diversityII = 1
+
+# OS/2 and POST fixed metrics
+
+"os2.yStrikeoutPosition"   = 265
+"os2.yStrikeoutSize"       = 51
+"os2.ySubscriptXOffset"    = 0
+"os2.ySubscriptXSize"      = 665
+"os2.ySubscriptYOffset"    = 143
+"os2.ySubscriptYSize"      = 716
+"os2.ySuperscriptXOffset"  = 0
+"os2.ySuperscriptXSize"    = 665
+"os2.ySuperscriptYOffset"  = 491
+"os2.ySuperscriptYSize"    = 716
+"post.underlinePosition"   = -50
+"post.underlineThickness"  = 50
 
 [verbose]
 verbose = true
@@ -108,10 +125,8 @@ diversityI  = 0.75
 diversityII = 0.50
 
 ###### Slopes
-[s-italic]
+[slope-italic]
 isItalic = true
-slopeAngle = 9.4
 
-[s-oblique]
+[slope-oblique]
 isOblique = true
-slopeAngle = 9.4

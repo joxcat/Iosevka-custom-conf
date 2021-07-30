@@ -1,7 +1,6 @@
 $$include '../../../meta/macros.ptl'
 
 import [mix linreg clamp fallback] from '../../../support/utils'
-import [DesignParameters] from '../../../meta/aesthetics'
 import [Dotless CvDecompose] from "../../../support/gr"
 
 glyph-module
@@ -79,6 +78,10 @@ glyph-block Letter-Latin-Ezh : begin
 		include : MarkSet.capital
 		include : EzhShape CAP 0
 
+	create-glyph 'smcpEzh' 0x1D23 : glyph-proc
+		include : MarkSet.e
+		include : EzhShape XH 0
+
 	create-glyph 'ezh' 0x292 : glyph-proc
 		include : MarkSet.p
 		include : EzhShape XH Descender
@@ -94,10 +97,16 @@ glyph-block Letter-Latin-Ezh : begin
 		include : MarkSet.p
 		include : RevEzhShape XH Descender
 
-	create-glyph 'lyogh' 0x26E : glyph-proc
+	create-glyph 'lyogh.serifless' : glyph-proc
 		include : MarkSet.if
 		include : EzhShape XH Descender 0.4
 		include : VBarLeft SB (XH * 0.1) CAP
+
+	create-glyph 'lyogh.hooky' : glyph-proc
+		include [refer-glyph 'lyogh.serifless'] AS_BASE ALSO_METRICS
+		include : LeftwardTopSerif SB CAP SideJut
+
+	select-variant 'lyogh' 0x26E
 
 	create-glyph 'ezhtail' 0x1BA : glyph-proc
 		local b : mix Descender XH 0.25
@@ -118,7 +127,7 @@ glyph-block Letter-Latin-Ezh : begin
 
 	create-glyph 'ezhcurlytail' 0x293 : glyph-proc
 		include : MarkSet.e
-		local p (SmallSmoothB / (SmallSmoothA + SmallSmoothB))
+		local p : SmallSmoothB / (SmallSmoothA + SmallSmoothB)
 		include : EzhShape XH Descender nothing nothing p
 		local fine : AdviceStroke2 3 5 (XH - Descender)
 		local rinner : (XH * 0.4 - fine * 1.5) / 2
@@ -127,6 +136,6 @@ glyph-block Letter-Latin-Ezh : begin
 		local y2 Descender
 		include : dispiro
 			widths.lhs
-			g4 m1 [mix [mix Descender XH 0.6] Descender p] [heading Downward]
-			g4 m1 ([mix [mix Descender XH 0.6] Descender p] - 1) [heading Downward]
+			g4 m1 ([mix [mix Descender XH 0.6] Descender p] + 0.1) [heading Downward]
+			g4 m1 ([mix [mix Descender XH 0.6] Descender p] - 0.1) [heading Downward]
 			CurlyTail fine rinner m1 Descender SB x2 y2

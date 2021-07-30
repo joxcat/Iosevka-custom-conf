@@ -3,6 +3,7 @@
 const fs = require("fs-extra");
 const path = require("path");
 const zlib = require("zlib");
+const { encode } = require("@msgpack/msgpack");
 
 const { FontIo } = require("ot-builder");
 const Toml = require("@iarna/toml");
@@ -15,7 +16,7 @@ const { createGrDisplaySheet } = require("./support/gr");
 
 module.exports = async function main(argv) {
 	const paraT = await getParameters();
-	const { font, glyphStore } = BuildFont(paraT(argv));
+	const { font, glyphStore } = await BuildFont(argv, paraT(argv));
 	if (argv.oCharMap) await saveCharMap(argv, glyphStore);
 	if (argv.o) await saveTTF(argv, font);
 };
@@ -25,6 +26,7 @@ async function getParameters() {
 	const PARAMETERS_TOML = path.resolve(__dirname, "../params/parameters.toml");
 	const WEIGHTS_TOML = path.resolve(__dirname, "../params/shape-weight.toml");
 	const WIDTHS_TOML = path.resolve(__dirname, "../params/shape-width.toml");
+	const SLOPES_TOML = path.resolve(__dirname, "../params/shape-slope.toml");
 	const PRIVATE_TOML = path.resolve(__dirname, "../params/private-parameters.toml");
 	const VARIANTS_TOML = path.resolve(__dirname, "../params/variants.toml");
 	const LIGATIONS_TOML = path.resolve(__dirname, "../params/ligation-set.toml");
@@ -34,15 +36,16 @@ async function getParameters() {
 		await tryParseToml(PARAMETERS_TOML),
 		await tryParseToml(WEIGHTS_TOML),
 		await tryParseToml(WIDTHS_TOML),
+		await tryParseToml(SLOPES_TOML),
 		fs.existsSync(PRIVATE_TOML) ? await tryParseToml(PRIVATE_TOML) : {}
 	);
 	const rawVariantsData = await tryParseToml(VARIANTS_TOML);
 	const rawLigationData = await tryParseToml(LIGATIONS_TOML);
 
-	function reinit(argv) {
-		let para = Parameters.init(parametersData, argv);
-		VariantData.apply(rawVariantsData, para, argv);
-		ApplyLigationData(rawLigationData, para, argv);
+	function createParaImpl(argv) {
+		let para = Parameters.init(deepClone(parametersData), argv);
+		VariantData.apply(deepClone(rawVariantsData), para, argv);
+		ApplyLigationData(deepClone(rawLigationData), para, argv);
 
 		if (argv.excludedCharRanges) para.excludedCharRanges = argv.excludedCharRanges;
 		if (argv.compatibilityLigatures) para.compLig = argv.compatibilityLigatures;
@@ -56,9 +59,13 @@ async function getParameters() {
 			width: argv.menu.width - 0,
 			slope: argv.menu.slope
 		};
+		return para;
+	}
 
+	function reinit(argv) {
+		const para = createParaImpl(argv);
 		para.reinit = function (tf) {
-			const argv1 = JSON.parse(JSON.stringify(argv));
+			const argv1 = deepClone(argv);
 			tf(argv1, argv);
 			return reinit(argv1);
 		};
@@ -75,6 +82,10 @@ async function tryParseToml(str) {
 			`Failed to parse configuration file ${str}.\nPlease validate whether there's syntax error.\n${e}`
 		);
 	}
+}
+
+function deepClone(pod) {
+	return JSON.parse(JSON.stringify(pod));
 }
 
 // Save TTF
@@ -97,5 +108,5 @@ async function saveCharMap(argv, glyphStore) {
 			...createGrDisplaySheet(glyphStore, gn)
 		]);
 	}
-	await fs.writeFile(argv.oCharMap, zlib.gzipSync(Buffer.from(JSON.stringify(charMap), "utf-8")));
+	await fs.writeFile(argv.oCharMap, zlib.gzipSync(encode(charMap)));
 }

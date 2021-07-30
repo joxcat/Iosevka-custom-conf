@@ -1,11 +1,11 @@
 "use strict";
 
-const path = require("path");
-const fs = require("fs-extra");
-const semver = require("semver");
+const Path = require("path");
+const Fs = require("fs-extra");
+const SemVer = require("semver");
 const execMain = require("../shared/execMain");
 
-const ChangeFileDir = path.join(__dirname, "../../changes");
+const ChangeFileDir = Path.join(__dirname, "../../changes");
 const Version = process.argv[2];
 const releasePackagesJsonPath = process.argv[3];
 const outputPath = process.argv[4];
@@ -21,8 +21,8 @@ async function main() {
 	await CopyMarkdown(out, "packages-desc.md");
 	await GeneratePackageList(out);
 
-	await fs.ensureDir(path.join(__dirname, `../../release-archives/`));
-	await fs.writeFile(outputPath, out.buffer);
+	await Fs.ensureDir(Path.join(__dirname, `../../release-archives/`));
+	await Fs.writeFile(outputPath, out.buffer);
 }
 
 class Output {
@@ -38,8 +38,8 @@ class Output {
 // Copy Markdown
 
 async function CopyMarkdown(out, name) {
-	const content = await fs.readFile(
-		path.resolve(__dirname, `release-note-fragments/${name}`),
+	const content = await Fs.readFile(
+		Path.resolve(__dirname, `release-note-fragments/${name}`),
 		"utf8"
 	);
 	out.log(content);
@@ -49,21 +49,29 @@ async function CopyMarkdown(out, name) {
 // CHANGE LIST
 
 async function GenerateChangeList(out) {
-	const changeFiles = await fs.readdir(ChangeFileDir);
+	const changeFiles = await Fs.readdir(ChangeFileDir);
 	const fragments = new Map();
 	for (const file of changeFiles) {
-		const filePath = path.join(ChangeFileDir, file);
-		const fileParts = path.parse(filePath);
+		const filePath = Path.join(ChangeFileDir, file);
+		const fileParts = Path.parse(filePath);
 		if (fileParts.ext !== ".md") continue;
-		if (!semver.valid(fileParts.name) || semver.lt(Version, fileParts.name)) continue;
-		fragments.set(fileParts.name, await fs.readFile(filePath, "utf8"));
+		if (!SemVer.valid(fileParts.name) || SemVer.lt(Version, fileParts.name)) continue;
+		fragments.set(fileParts.name, await Fs.readFile(filePath, "utf8"));
 	}
-	const sortedFragments = Array.from(fragments).sort((a, b) => semver.compare(b[0], a[0]));
 
-	const [version, notes] = sortedFragments[0];
-	out.log(``);
-	out.log(`## Changes of version ${version}`);
-	out.log(notes.trimEnd() + "\n");
+	const sortedFragments = Array.from(fragments).sort((a, b) => SemVer.compare(b[0], a[0]));
+
+	const latestMajor = SemVer.major(sortedFragments[0][0]);
+	const latestMinor = SemVer.minor(sortedFragments[0][0]);
+
+	for (const [version, notes] of sortedFragments) {
+		const currentMajor = SemVer.major(version);
+		const currentMinor = SemVer.minor(version);
+		if (latestMajor !== currentMajor || latestMinor !== currentMinor) continue;
+		out.log(``);
+		out.log(`## Changes of version ${version}`);
+		out.log(notes.trimEnd() + "\n");
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -80,7 +88,7 @@ const Spacings = {
 const imagePrefix = `https://raw.githubusercontent.com/be5invis/Iosevka/v${Version}/images`;
 
 async function GeneratePackageList(out) {
-	const pkgShapesData = await fs.readJson(releasePackagesJsonPath);
+	const pkgShapesData = await Fs.readJson(releasePackagesJsonPath);
 	const DownloadLinkPrefix = `https://github.com/be5invis/Iosevka/releases/download/v${Version}`;
 
 	out.log(`<table>`);
@@ -98,9 +106,10 @@ async function GeneratePackageList(out) {
 		const img = `<img src="${imagePrefix}/${groupID}.png"/>`;
 		out.log(
 			`<tr>`,
-			`<td colspan="4"><b>&#x1F4E6; ${familyName}</b> — ${desc}</td>`,
-			`<td><b><a href="${sTtcLink}">Super-TTC</b></td>`,
+			`<td colspan="3"><b>&#x1F4E6; ${familyName}</b> — ${desc}</td>`,
+			`<td><b><a href="${sTtcLink}">Super\u00A0TTC</b></td>`,
 			`<td><b><a href="${ttcLink}">TTC</b></td>`,
+			`<td colspan="3">&nbsp;</td>`,
 			`</tr>`
 		);
 
@@ -109,7 +118,7 @@ async function GeneratePackageList(out) {
 			`<td><b>&nbsp;&nbsp;└ Sub-packages</b></td>`,
 			`<td><b>Spacing</b></td>`,
 			`<td><b>Ligatures</b></td>`,
-			`<td colspan="3"><b>Downloads</b></td>`,
+			`<td colspan="5"><b>Downloads</b></td>`,
 			`</tr>`
 		);
 		let lastSubGroupID = null;
@@ -129,6 +138,8 @@ async function GeneratePackageList(out) {
 				`<td>${leader}&nbsp;<b>${noBreak(subGr.family)}</b></td>`,
 				`<td>${spacingDesc}</td>`,
 				`<td>${flag(ligation)}</td>`,
+				`<td>${createLink("Super\u00A0TTC", "super-ttc-sgr")}</td>`,
+				`<td>${createLink("TTC", "ttc-sgr")}</td>`,
 				`<td>${createLink("TTF", "ttf")}</td>`,
 				`<td>${createLink("Unhinted", "ttf-unhinted")}</td>`,
 				`<td>${createLink("WebFont", "webfont")}</td>`,
@@ -136,7 +147,7 @@ async function GeneratePackageList(out) {
 			);
 		}
 
-		out.log(`<tr>`, `<td colspan="6">${img}</td>`, `<tr/>`);
+		out.log(`<tr>`, `<td colspan="8">${img}</td>`, `<tr/>`);
 	}
 	out.log(`</table>\n`);
 }

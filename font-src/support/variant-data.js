@@ -79,6 +79,7 @@ class Prime {
 		this.tag = cfg.tag;
 		this.slopeDependent = !!cfg.slopeDependent;
 		this.variants = new Map();
+		this.hotChars = cfg.hotChars ? [...cfg.hotChars] : this.descSampleText;
 		for (const varKey in cfg.variants) {
 			const variant = cfg.variants[varKey];
 			this.variants.set(varKey, new PrimeVariant(varKey, cfg.tag, variant));
@@ -100,12 +101,14 @@ class Prime {
 			slopeDependent: this.slopeDependent,
 			ligatureSampler: this.ligatureSampler,
 			descSampleText: this.descSampleText,
+			hotChars: this.hotChars,
 			variants: []
 		};
 		for (const variant of this.variants.values()) {
 			gr.variants.push({
 				key: variant.key,
 				rank: variant.rank,
+				rankGroup: variant.rankGroup,
 				description: variant.description
 			});
 		}
@@ -120,6 +123,7 @@ class PrimeVariant {
 		this.tag = tag;
 		this.description = cfg.description;
 		this.rank = cfg.rank;
+		this.rankGroup = cfg.rankGroup || 0;
 		this.selector = cfg.selector;
 		this.nonDeriving = cfg.nonDeriving;
 	}
@@ -143,6 +147,14 @@ class Composite {
 		this.upright = cfg.upright || cfg["upright-oblique"];
 		this.oblique = cfg.oblique || cfg["upright-oblique"];
 		this.italic = cfg.italic;
+
+		const slabOverrideCfg = cfg["slab-override"] || {};
+		this.slabOverride = {
+			design: slabOverrideCfg.design,
+			override: slabOverrideCfg.upright || slabOverrideCfg["upright-oblique"],
+			oblique: slabOverrideCfg.oblique || slabOverrideCfg["upright-oblique"],
+			italic: slabOverrideCfg.italic
+		};
 	}
 
 	decompose(para, selTree) {
@@ -150,7 +162,9 @@ class Composite {
 		const cfg = Object.assign(
 			{},
 			this.design,
-			para.isItalic ? this.italic : para.isOblique ? this.oblique : this.upright
+			this.decomposeSlope(this, para),
+			!para.slab ? {} : this.slabOverride.design,
+			!para.slab ? {} : this.decomposeSlope(this.slabOverride, para)
 		);
 		for (const [k, v] of Object.entries(cfg)) {
 			const pv = selTree.get(k, v);
@@ -158,6 +172,9 @@ class Composite {
 			ans.push(pv);
 		}
 		return ans;
+	}
+	decomposeSlope(base, para) {
+		return para.isItalic ? base.italic : para.isOblique ? base.oblique : base.upright;
 	}
 	resolve(para, selTree, catalog, vs) {
 		if (this.inherits) {

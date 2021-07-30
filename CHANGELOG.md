@@ -1,532 +1,373 @@
 ## Modifications since version 2.x
 
-### 5.0.1
+### 8.0.2
 
- * Correct shape of turned `t`, and width of various variant of `t` and `r` in Aile (#892).
- * Add ligation for connected underscore. Currently only under `dlig` (#888).
-
-
-### 5.0.0
-
- * **Breaking** Iosevka Aile and Iosevka Etoile now support `cv##` and `ss##` features.
- * **Breaking** Pre-built “SS” families will no longer contain `cv##` and `ss##` features, as their style has already been pre-baked.
- * **Breaking** Iosevka Sparkle is removed from prebuilt packages.
- * **Breaking** Reorder `cv##` features and variant assignments for better organization.
- * **Breaking** Spilt out variant selector for `A`, `V`, `W`, `Z` (#806).
- * **Breaking** Certain variants' names are changed:
-   - Phrase `singlestorey` and `doublestorey` used in  `a` and `g` variants are renamed to `single-storey` and `double-storey`.
-   - Variants of percent (`%`) sign are renamed.
- * Add Characters:
-     * Z Notation Schema Composition (`U+2A1F`) and Z Notation Relation Composition (`U+2A3E`) (#857).
-     * Circled Zero With Slash (`U+1F10D`, #861).
-     * Ballot Box, Ballot Box with Check and Ballot Box with X (`U+2610` ... `U+2612`, #890).
- * Add Variants:
-     * Add diagonal-tailed variants for `f`, `i`, `j`, `k`, `l`, `q`, `t` (#795).
-     * Add motion-serifed variants for `A`, `B`, `D`, `E`, `F`, `H`, `K`, `M`, `N`, `P`, `R`, `T`, `V`, `W`, `X`, `Y`, `Z`, `v`, `w`, `x`, `y`, `z` (#806, #815, #818).
-     * Add symmetric-legged variants for `K` and `k` (#807).
-     * Add horizontal-tailed and detach-tailed variants for `Q` (#808).
-     * Add hook-less and capped variants for `G` (#809).
-     * Add open-contour variants for `P` and `R` (#810).
-     * Add standing variants for `R` (#810).
-     * Add toothed and motion-serifed variants for `U` (#811).
-     * Add double-v and asymmetric variants for `W` and `w` (#812).
-     * Add motion-serifed toothless variants for `u` (#813).
-     * Add flat-serifed variants for `1` (#819).
-     * Add serifed and top-serifed variants for `S` and `s` (#800, #822).
-     * Add oblique-upper-left-bar variant for `5` (#820).
-     * Add compact-serifed and compact-top-serifed variants of `r` (#826).
-     * Add oval variant for `0` (#828).
-     * Add corner and flat-hooked variants for `?` (#829).
-     * Add oval slashed / dotted variants for `0` (#834).
-     * Add rings-continuous-slash-also-connected variant to `%` (#835).
-     * Add inward-serifed variants for `C`, `G`, `S`, `c` (#837).
-     * Add asymmetric variants for `N` (#838).
-     * Add base-serifed variants for `Y` (#850).
-     * Add base-serifed variants for `r` (#851).
-     * Add bar-interrupted variants for Dollar and Cent sign (#863).
-     * Add Hooky variant for `j` (#864).
-     * Add bend and curly variants for `7` (#866).
-     * Add interrupted variants for `B` (#869).
-     * Add variant selectors for Greek lower Alpha and Iota (#873).
-     * Add tail to Greek lower Pi and Tau (#875).
-     * Add compact/descending variants for `J` (#876).
-     * Add cursive `v` and `w`.
-     * Add straight-bar AE (`Æ`), follows variant selector for `A` (#800).
- * Add IBM Plex Mono, PT Mono and Recursive Mono stylistic sets (#796, #855).
- * Fix width of flat-hook-serifless `j` (#860).
- * Fix broken shape of tailed Cyrillic DJE (`U+0452`, #803).
- * Slightly increase size of `⊂`, `⊃`, `⊏` and `⊐` for better distinction (#804).
+ * Fix TTC grouping (#1167).
 
 
-### 4.5.0
+### 8.0.1
 
- * Fix broken shape of `LCaron` (`U+013D`, #791).
- * Fix missing serifs in Latin Small Capital I (`U+026A`, #793).
+ * Fix filenames in 9-file TTC (#1167).
+ * Fix gap in Bulgarian De (#1168).
+
+
+### 8.0.0
+
+ * \[**Breaking**\] Add support for slope customization (#599, #1165).
+   - Slope customization format has a major change, giving ability to customize slope grade used for variant selection, as well as slope angle.
+   - The format will look like this:
+     ``` toml
+     [buildPlans.iosevka-custom.slopes.upright]
+     angle = 0             # Angle in degrees. Valid range [0, 15]
+     shape = "upright"     # Slope grade used for shape selection.  `upright` | `oblique` | `italic`
+     menu  = "upright"     # Slope grade used for naming.           `upright` | `oblique` | `italic`
+     css   = "normal"      # Slope grade used for webfont CSS.      `normal`  | `oblique` | `italic`
+
+     [buildPlans.iosevka-custom.slopes.oblique]
+     angle = 9.4
+     shape = "oblique"
+     menu  = "oblique"
+     css   = "oblique"
+
+     [buildPlans.iosevka-custom.slopes.italic]
+     angle = 9.4
+     shape = "italic"
+     menu  = "italic"
+     css   = "italic"
+     ```
+
+
+### 7.3.3
+
+ * Fix serif placement of Latin Small Letter Reversed R with Fishhook (`U+027F`) (#1163).
+
+
+### 7.3.2
+
+ * Fix anchor placement of:
+   - Latin Letter Small Capital R (`U+0280`) (#1159)
+   - Latin Letter Small Capital L (`U+029F`) (#1159)
+   - Cyrillic Small Letter Psi (`U+0471`) (#1159)
+   - Latin Letter Small Capital E (`U+1D07`) (#1159)
+   - Latin Letter Small Capital L with Stroke (`U+1D0C`) (#1159)
+   - Latin Letter Small Capital U (`U+1D1C`) (#1159)
+   - Modifier Letter Small Capital U (`U+1DB8`) (#1159)
+   - Turned Small F (`U+214E`) (#1159)
+   - Latin Letter Small Capital Turned E (`U+2C7B`) (#1159)
+   - Latin Small Letter Egyptological Alef (`U+A723`) (#1159)
+   - Latin Small Letter Egyptological Ain (`U+A725`) (#1159)
+   - Latin Letter Small Capital F (`U+A730`) (#1159)
+   - Latin Small Letter R Rotunda (`U+A75B`) (#1159)
+   - Combining Homothetic Above (`U+034B`) (#1162)
+   - Combining Almost Equal To Above (`U+034C`) (#1162)
+   - Combining Latin Small Letter Long S (`U+1DE5`) (with `cv51 = 5`) (#1162)
+   - Combining Cyrillic Letter De (`U+2DE3`) (#1162)
+
+
+### 7.3.1
+
+ * Fix placement of above marks over Cyrillic Small Ge, Te, and Ya (#1157).
+
+
+### 7.3.0
+
+ * Add Greek Upsilon with Hook Symbol (`U+03D2`).
+ * Add flat-topped lowercase Delta (#856).
+ * Add rounded lowercase Xi (#856).
+ * Fix Bulgarian Small Ka's variant assignment (#1147).
+ * Fix shape of Ruble Sign (#1155).
+
+
+### 7.2.8
+
+ * Fix broken shape of Cyrillic Small Letter Sha when `cv45 = 9` (#1154).
+
+
+### 7.2.7
+
+ * Fix incorrect shape of Proportional To (`U+221D`), Infinity (`U+221E`) and Inverted Lazy S (`U+223E`) under Italic/Oblique.
+ * Fix shape of `d` `serifed-tailed` (#1150).
+ * Make Latin Small Letter Dotless J with Stroke and Hook (`U+0284`) follow shape of `f` (#1151).
+ * Fix `cv44` application on phonetic letters (#1152).
+ * Fix shape of Combining Low Line (#1153).
+
+
+### 7.2.6
+
+ * Fixed shape of Bulgarian I with Breve, Yer, Yeri, De, Che and En (#1147).
+
+
+### 7.2.5
+
+ * Fix placement of overlay bar in Latin Small Letter D with Stroke (`U+0111`) (#1146).
+
+
+### 7.2.4
+
+ * Turn on square-dot punctuations in these stylistic sets:
+   - `ss02` Anonymous Pro;
+   - `ss04` Menlo;
+   - `ss06` Liberation Mono;
+   - `ss13` Lucida Grande Mono;
+   - `ss17` Recursive Mono.
+
+
+### 7.2.3
+
+ * Fix geometry of `y` (#1144).
+ * Make the Zero in SS13 more distinctive (#1141).
+
+
+### 7.2.2
+
+ * Fix broken geometry of Apl Functional Symbol Quad Question (`U+2370`) (#1138).
+ * Add Tugrik Sign (`U+20AE`) (#1139).
+
+
+### 7.2.1
+
+ * Fix missing variants of square dots of the following characters (#1136):
+   * Inverted Question Mark (`U+00BF`);
+   * Latin Capital Letter L with Middle Dot (`U+013F`);
+   * Latin Small Letter L with Middle Dot (`U+0140`);
+   * Reference Mark (`U+203B`);
+   * Questioned Equal To (`U+225F`);
+   * Multiset Multiplication (`U+228D`);
+   * Apl Functional Symbol Quad Divide (`U+2339`);
+   * Apl Functional Symbol Quad Colon (`U+2360`);
+   * Apl Functional Symbol Quad Question (`U+2370`);
+   * Line Integration with Rectangular Path Around Pole (`U+2A12`);
+   * Line Integration with Semicircular Path Around Pole (`U+2A13`);
+   * Line Integration Not Including the Pole (`U+2A14`);
+   * Integral Around a Point Operator (`U+2A15`);
+   * Intersection with Dot (`U+2A40`);
+   * Inverted Interrobang (`U+2E18`);
+   * Modifier Letter Colon (`U+A789`);
+   * Colon, Semicolon, Exclamation Mark and Question Mark in ligations.
+
+
+### 7.2.0
+
+ * Add square-dot variants for period, comma, colon, semicolon and all punctuations and symbols involving dot shape (diacritics are not included; #927).
+ * Refine geometry of Partial Differential Symbol (`U+2202`) (#862).
+ * Refine geometry of Cyrillic Small Be (`U+0431`), De (`U+0414`, `U+0434`), El (`U+041B`, `U+043B`), Ef (`U+0424`, `U+0444`), Che (`U+0247`, `U+0447`), E (`U+042D`, `U+044D`) and Ye (`U+0404`, `U+0454`) (#1128).
+
+
+### 7.1.1
+
+ * Add Greek Number Sign (`U+0374`).
+ * Fix Misplaced diacritics in `U+A7BA`, `U+A7BC`, and `U+A7BE` (#1125).
+ * Make Modifier Letter Colon (`U+A789`) smaller than Colon (#1126).
+
+
+### 7.1.0
+
+ * Add single-spacing TTC and Super TTC (#1112).
+ * Add Greek Beta Symbol (`U+03D0`), Greek Kai Symbol (`U+03D7`), Greek Letter Digamma (`U+03DC`), Greek Small Letter Digamma (`U+03DD`), Greek Kappa Symbol (`U+03F0`), Greek Rho Symbol (`U+03F1`), Greek Lunate Epsilon Symbol (`U+03F5`) and Greek Reversed Lunate Epsilon Symbol (`U+03F6`).
+ * Add Hryvnia sign (`U+20B4`) (#1117).
+ * Fix placement of diacritics over uppercase Greek (#1115).
+ * Adjust metrics of punctuations in Aile and Etoile (#1115).
+ * Fix placement of mathematical colon-like operators; Add Modifier Letter Colon (`U+A789`) (#1118).
+ * Improve handling of diacritics in [Kitty](https://sw.kovidgoyal.net/kitty/) (#1007, kovidgoyal/kitty#3716)).
+ * Fix variant application of `cv30` on derived letters of `e` (#1120).
+ * Make brailles always upright (#1124).
+ * Fix geometry of:
+   - Latin Capital Letter I with Ogonek (`U+012E`), Latin Small Letter with Ogonek (`U+012F`) (#1115).
+   - Latin Capital Letter L with Middle Dot (`U+013F`) (#1123).
+   - Latin Small Letter B with Stroke (`U+0180`) (#1115).
+   - Latin Capital Letter K with Hook (`U+0198`) (#1123).
+   - Latin Capital Letter Gha (`U+01A2`), Latin Small Letter Gha (`U+01A3`) (#1115).
+   - Latin Capital Letter V with Hook (`U+01B2`), Latim Small Letter V with Hook (`U+028B`).
+   - Latin Letter Inverted Glottal Stop with Stroke (`U+01BE`) (#1115).
+   - Latin Capital Letter Hwair (`U+01F6`), Latin Small Letter Hwair (`U+0195`) (#1115).
+   - Latin Capital Letter Y with Stroke (`U+024E`) (#1115).
+   - Greek Capital Letter Theta (`U+0398`) (#1115).
+   - Greek Capital Letter Xi (`U+039E`) (#1115).
+   - Greek Capital Letter Delta (`U+0394`), Increment Symbol (`U+2206`) under Slab (#1115).
+   - Greek Capital Letter Psi (`U+03A8`), Greek Small Letter Psi (`U+03C8`), Cyrillic Small Letter Psi (`U+0471`) (#1115).
+   - Greek Small Letter Upsilon (`U+03C5`) (#1115).
+   - Greek Small Letter Chi (`U+03C7`) (#1115).
+   - Latin Small Letter A With Right Half Ring (`U+1E9A`) (#1115).
+   - Latin Small Letter Y With Dot Below (`U+1EF5`) (#1115).
+   - Mathematical Double-struck Capital E (`U+1D53C`) (#1119).
+
+
+### 7.0.4
+
+ * Exported glyphs' names in production fonts, which enables ligatures in [Kitty](https://sw.kovidgoyal.net/kitty/) (#1007).
+ * Fix broken connecting underscore ligatures (#1110).
+
+
+### 7.0.3
+
+ * Fix assignment of italic `d`, `ss03`, `ss06` and `ss08` (#1104).
+
+
+### 7.0.2
+
+ * Fix Aile's long-S at Italic (#1098).
+ * Fix assignment of capital Gamma in `ss14` (#1099).
+ * Fix rounding errors found in certain Extended glyphs (#1100).
+ * Fix assignment of `k` in `ss20` (#1102).
+
+
+### 7.0.1
+
+ * Add cursive for Latin Small Letter W with Hook (`U+2C73`) (#1081).
+ * Fix missing variants of Latin Small Letter Turned M with Long Leg (`U+0270`) (#1082).
+ * Fix broken geometry of Single-arch Latin Capital Letter Turned M (`U+019C`) (#1083).
+ * Fix broken geometry of Single-arch Mathematical Bold Small M (`U+1D426`) (#1084).
+ * Fix missing serif and `cv39` variants of Latin Small Letter Feng Digraph (`U+02A9`) (#1085).
+ * Fix missing variant of Latin Small Letter Ue (`U+1D6B`) (#1086).
+ * Fix missing serif of Italic Latin Phi (#1087).
+ * Remove `U+1FB93` ("Left Half Block and Right Half Inverse Medium Shade") since it is a reserved code point for now (#1088).
+ * Add Black Rightwards Arrowhead (`U+27A4`) (#1090).
+ * Fix inconsistent hook shape on Latin Small Letter T with Retroflex Hook (`U+0288`) (#1091).
+ * Fix regression of diacritic placement of over-the-tie marks (#1092).
+ * Fix missing variants of white curly brackets (`U+2983`, `U+2984`) (#1093).
+ * Fix the placement of the diacritic in Latin Small Letter L with Cedilla (`U+1E29`) (#1095).
+ * Improve legibility of Ampersand (closed and upper-open) (#1096).
+
+
+### 7.0.0
+
+ * \[**Breaking**\] Variant tags are reordered.
+ * \[**Breaking**\] Variant names of certain letters are renamed and reorganized, including:
+   - `E`.
+   - `F`.
+   - `H`.
+   - `K`.
+   - `L`.
+   - `U`.
+   - `a`.
+   - `g`.
+   - `k`.
+   - `h`.
+   - `l`.
+   - `m`.
+   - `n`.
+   - `q`.
+   - `u`.
+   - Long-S (`ſ`).
+   - Eszet (`ß`).
+   - Greek Small Iota (`ι`).
+   - Upper Gamma (`Γ`).
+   - Cyrillic Ze (`З` and `з`).
+   - Cyrillic Ka (`К` and `к`).
+   - Cyrillic Small En (`н`).
+ * \[**Breaking**\] Variant selector of Cyrillic Ya (`Я` / `я`) are detached from `R`.
  * Add characters:
-   - Latin Capital K and Small K with Descender (`U+2C69`, `U+2C6A`).
-   - Advanced Ring Integrals (`U+222F` ... `U+2233`, `U+2A11` ... `U+2A16`).
-   - Inverted Lazy S (`U+223E`).
-   - Equivalent To and Not Equivalent To (`U+224D`, `U+226D`).
-   - XOR, NAND and NOR (`U+22BB` ... `U+22BD`).
-   - Division Times (`U+22C7`).
-   - Upper-half and Lower-half filled square (`U+2B12`, `U+2B13`).
-   - Ellipses (`U+2B2C` ... `U+2B2F`).
-   - Medium and Small Stars, Large Heavy White Circle (`U+2B50` ... `U+2B52`, `U+2B55`).
-   - Barb Arrows (`U+2794`, `U+1F860` ... `U+1F887`, #792).
-   - Sans Serif Arrows (`U+1F850` ... `U+1F859`).
-   - Isosceles Right-Angle Triangles (`U+1F780` ... `U+1F783`).
-
-
-### 4.4.0
-
- * Add motion serif variants for `a`, `b`, `d`, `g`, `k`, `L`, `q`, `Z` and `z` (#789).
- * Add vertical-crossing variant for `Q` (#789).
- * Split variant assignment for `Z` and `z` (#789).
-
-
-### 4.3.0
-
- * Add two-circle variant of `8` (#786).
- * Add leading serif for `C`, `c`, `G`, `S`, `s` in Slab (#787).
- * Made per-mille symbol and base-point symbol wide in non-terminal variants.
- * Add super-ttc (single-file TTC) into releases.
-
-
-### 4.2.0
-
- * Add character:
-   - Narrow no-break space (`U+202F`).
-   - Thai Currency Symbol Baht (`U+0E3F`, #781).
-   - Bitcoin Symbol (`U+20BF`).
-   - Projection (`U+2305`) and Perspective(`U+2306`, #780).
- * Add `raised-turn-comma` variant for ASCII grave (#778).
- * Add `straight-neck` variant for digit TWO (`2`, #779).
- * Add long-top-serif variants of `1` (#783).
- * Add metric override `onumZeroHeightRatio` for height of old-style numbers (#784).
-
-
-### 4.1.1
-
- * Fix letterform of `t` in `ss14`.
- * Add curly-turn variant of `y` (#775).
-
-
-### 4.1.0
-
- * Add rounded variant of `e` (#771).
- * Add flat-hook single-storey variants for `g` and `y` (#772).
- * Create separate variant selector for Cyrillic capital U (#773).
-
-
-### 4.0.3
-
- * Fix operator centering chain propagation under Apple platform (#768).
- * Fix Cyrillic Small ER's variant selection, always keeping ears (#769).
-
-
-### 4.0.2
-
- * Add ligation group `brack-bar` and `brace-bar`, and enabled in `dlig` (#767).
- * Add characters:
-   - Telephone Sign (`U+2121`) and Facsimile Sign (`U+213B`).
-   - Cross Mark (`U+274C`).
-
-
-### 4.0.1
-
- * Improve of component glyph coloring of non-equal ligation (like `!=`).
- * Correct shape of `4` in SS14.
- * Add Characters:
-   - Atom Symbol (`U+269B`).
-   - Black Slightly Small Circle Circle ... Very Heavy Eight-Spoked Asterisk (`U+1F784` ... `U+1F7BF`).
-
-
-### 4.0.0
-
- * \[**Breaking**\] Change implementation of character variants to `cv##` and alternate substitutions (#572).
- * \[**Breaking**\] Change the building configuration format -- now we use dicts instead of “array of styles”.
- * \[**Breaking**\] Cleanup of weight levels and increase contrast under heavier weights.
- * \[**Breaking**\] Remove WOFF 1 web font building.
- * \[**Breaking**\] Release packages will now be divided by formats.
- * Add Characters:
-   - Derived bold, italic, sans-serif, typewriter, and double-struck letters / digits, in Mathematical Alphanumeric Symbols block (#444, #712).
-   - Half-filled stars (`U+2BE8` ... `U+2BEB`, #708).
-   - `U+0462` CYRILLIC CAPITAL LETTER YAT and `U+0463` CYRILLIC SMALL LETTER YAT (#727).
-   - `U+1D6A4` MATHEMATICAL ITALIC SMALL DOTLESS I, `U+1D6A5` MATHEMATICAL ITALIC SMALL DOTLESS J (#730).
-   - U+23CF EJECT SYMBOL (#728).
- * Add Variants:
-   - `u`/`toothless-corner` (#706).
-   - Curly variants of `Z` / `z` (#362).
-   - Toothless-corner variant of `G` and Ampersand (`&`).
- * Update `ss09` style for capital G to Toothless (#726).
- * Add ligation set for Verilog (#710).
- * Add more alternative exclamation-related ligation sets (`exeqeq-dotted`, `eqexeq-dotted`, `eqexeq-dl-dotted`) (#748).
- * Fix the shape of hook-top V's.
- * Make check and cross marks wide-aware.
- * Fix middle bar placement of `U+2180` under quasi-proportional.
- * Correct description of `1` variants (#711).
- * Fix broken Bulgarian localization of Cyrillic Small Sha and Cyrillic Capital El (#716).
- * Fix broken serif shapes in Italic Cyrillic Small I (#717).
- * Fix incorrect serifs of Greek Small Rho (#718).
- * Fix inconsistent italic serif of `U+0463` CYRILLIC SMALL LETTER YAT (#729).
- * Fix inconsistent serif on Bulgarian `U+044E` CYRILLIC SMALL LETTER YU (#732).
- * Fix variant application on italic Cyrillic Small Te and Cyrillic Small I (#734).
- * Fix variant application on fraction 1/10 (`U+2152`, #736).
- * Fix variant application on LATIN SMALL LETTER WITH STROKE (`U+0167`, #737).
- * Fix centering of `Q` variants when occurred in enclosures (#751).
- * Fix broken descender connection of `cyrl/tse` (U+0446) under Italic (#754).
- * Fix missing serifs in earless-corner `m` variants (#752).
- * Remove slight curvature of italic single-storey `a` (#755).
- * Fix kerned dotty operators' placement when placed near brackets and commas (#757).
-
-
-### 3.7.1
-
- * Fix broken line height under Macintosh (#704).
-
-
-### 3.7.0
-
- * Make `v-k-cursive` visible in Upright and Oblique; Split variant selectors for `k` and `K` (#700).
- * Add flat hooked but tailed variants for `f` (`VXEX` ... `VXFA`) (#697).
- * Fix mark position of Small Heng With Hook (`U+0267`) and Small Heng (`U+A727`); add letter Cyrillic Iotified Small and Big Yus (`U+0468`, `U+0469`, `U+046C`, `U+046D`), Capital Heng (`U+A726`), and Cyrillic En With Hook (`U+04C7`, `U+04C8`).
- * Corrected shape of descender-accented Cyrillic letters under Slab; Add letter Khakassian Che (`U+04CB`, `U+04CC`) and Ghe With Descender (`U+04F6`, `U+04F7`).
- * Add more asterisk and star dingbats (`U+2733`, `U+2734`, `U+2737` ... `U+273A`).
- * Add more sized geometric shapes (`U+26AA`, `U+26AB`, `U+2B1A` ... `U+2B1E`, `U+2B25` ... `U+2B2B`, `U+2BC0` ... `U+2BC8`, `U+2BCA`, `U+2BCB`).
- * Fix variant selection for `ɳ` (`U+0273`), `ɖ` (`U+0256`), and `ᶑ` (`U+1D91`).
- * Fix shape of capital `J` under Aile.
- * Fix `lSlash`'s shape under Aile.
- * Add graphic form of CGJ(`U+034F`), ZWNJ (`U+200C`), ZWJ (`U+200D`), Object Replacement Character (`U+FFFC`), and Replacement Character (`U+FFFD`, #698).
- * Add semicircle arrows (`U+21B6`, `U+21B7`) and open-circle arrows (`U+21BA`, `U+21BB`).
-
-
-### 3.6.3
-
- * Add Gear symbol (`U+2699`).
- * Make motion-serif variants work for Cyrillic letters having same outline like Latin `u` (#692).
- * Fix the italic shape of Cyrillic GE (`U+0491`).
- * Add Egyptological Alef (`U+A722`, `U+A723`), Ayin (`U+A724`, `U+A725`) and Glottal `a`, `i` and `u` (`U+A7BA` ... `U+A7BF`) (#695).
-
-
-### 3.6.2
-
- * Add compile option to default to old-style figures (#397).
- * Add control picture symbols (`U+2400` ... `U+2422`, `U+2424`).
- * Add Claudian letters (`U+2132`, `U+214E`, `U+2183`, `U+2184`, `U+2C75`, `U+2C76`).
-
-
-### 3.6.1
-
- * Add dice symbols (`U+2680` ... `U+2685`).
- * Add medium and extra-small squares (`U+25FB` ... `U+25FE`), white squares and circles with quadrants (`U+25F0` ... `U+25F7`) and white diagonal half triangles (`U+25F8` ... `U+25FA`, `U+25FF`).
-
-
-### 3.6.0
-
- * Add `v-f-flat-hook-serifed` and `v-f-flat-hook-serifed-crossbar-at-x-height` for `f` (#686).
-
-
-### 3.5.0
-
- * Increase size of bullet characters (#678).
- * Move registered trademark symbol (U+00A9, ®) to superscript (#679).
- * Balance old-style figures to reduce raggedness (#402).
- * Add ligation set for Wolfram Language (#680).
- * Add "Motion-serifed" variants for `h`, `m`, `n`, `p` and `u` (#684).
-
-
-### 3.4.7
-
- * Fix broken slab-serif variants of `m` and `n` in italics (#681).
-
-
-### 3.4.6
-
- * Fix unbalanced shape of `v`-related shapes.
- * Fix below marks of `Q`.
-
-
-### 3.4.5
-
- * Fix shape of `ɻ` under Aile variant.
-
-
-### 3.4.4
-
- * Add toothless variant for `a` (#669).
- * Add earless variants for `m`, `n`, `r` (#669).
- * Add asymmetric hookless and short-neck flat-hook variant of `t` (#669, #672).
-
-
-### 3.4.3
-
- * Fix conflicting CV tag of `VXDA`. Variant for `l` is renamed to `VXDL` (#668).
- * Fix compat-ligature building (#667).
- * Massively reduce the glyph quantity needed to support glyph variants.
-
-
-### 3.4.2
-
- * Add curly variant for ASCII single quote (`'`) and ASCII grave (`` ` ``) (#660).
- * Fix broken marks of U+1AB2, U+0356 and U+035A.
- * Fix bar placement of italic `џ`.
-
-
-### 3.4.1
-
- * Fix broken shape of heavy `v`.
- * Fix weight balancing (#656).
- * Fix image clipping in README (#657).
-
-
-### 3.4.0
-
- * Add tailed two-story `a` (#637).
- * Add turned five-pointing asterisk `*` (#638).
- * Add horizontal crossbar variant of `Z` and `z` (#640, #595).
- * Add serifless `J` (#640).
- * Add crossing `Q` (#640).
- * Add tailed variant for `m`, `n` and `h`.
- * Add flat-top `W`, `w` and flat-bottom `M` (#640).
- * Add continuous-bar-rings percent sign `%` (#643).
- * Fix combining letters' overlapping (#646).
- * Add earless variants for `a`, `g`, `p` and `q` (#648).
- * Add force-upright bar symbols (#652).
- * Add `v-l-serifed-asymmetric` for `l` (#522).
- * Add two "symmetric" variants of `J` (#654).
- * Add flat-hook `f`, `j` and `t` (#581).
-
-
-### 3.3.1
-
- * Add a slightly-curly tailed `a` and `u` (#631, #636).
- * Add triangle operators, bowtie operators and diagonal ellipsis.
- * Refine the crossbar width of `7` in `v-seven-crossbar` variant (#634).
- * Fix the broken shape of U-horns.
-
-
-### 3.3.0
-
- * Change shape of Peseta sign to `P` with crossbar (#451).
- * Add Cyrillic Fita (#617).
- * Add a more rounded variant of `D` (#616).
- * Add support for open number sign (`VXBI` and `VXBJ`, #621).
- * Add toothless variant of `b` and `d` (#462).
- * Fix italic Cyrillic I and Tse shape when `v-u-without-bar` is applied (#625).
- * Add `v-k-curly-cursive` combination (#627).
- * Add `calt-exeq-dotted` as an alternative style of `!=` ligation (#608).
-
-
-### 3.2.2
-
- * Fix broken ligation of kerning colons and dot-related symbols.
-
-
-### 3.2.1
-
- * Fix placement of comma-shaped caron in l-caron and t-caron (#613).
- * Fix placement of crossbar of `7` under onum and `VXAX`/`VXAY` (#615).
- * Fix placement of overflowing bar of R-bar (#614).
- * Fix shape of Reversed-E (#618).
-
-
-### 3.2.0
-
- * Add variants for six (`6`) : `v-six-closed-contour` (`VXAE`) and `v-six-open-contour` (`VXAF`). `v-nine-turned-six` is renamed to `v-nine-open-contour` (#562).
- * Make variant selectors able to influence `l-dot` (U+0140, #566).
- * Add variants for Ampersand (#211).
- * Fix small gaps of l-belt and l-rtail-belt (#569).
- * Fix R-bar's bar position (#574).
- * Add U+228C, U+228E, U+2214, U+221B, U+221C (#567).
- * Add straight-line variant for `1` (#573).
- * Cover all the characters in CP437 (#577).
- * Add parenthesis variant with larger contour (#570).
- * Fix placement of U+0315 COMBINING COMMA ABOVE RIGHT (#583).
- * Fix shape of U+1D24 LATIN LETTER VOICED LARYNGEAL SPIRANT (#584).
- * Allow the user to customize the characters' width freely (#554).
- * Fix placement of descenders in U+04AC/U+04AD CYRILLIC CAPITAL/SMALL LETTER TE WITH DESCENDER (#585).
- * Fix shape of U+01A6 LATIN LETTER YR under curly variant (#586).
- * Fix serif placement of U+044E CYRILLIC SMALL LETTER YU under Bulgarian locale (#587).
- * Make combining lines connect left and right (#590).
- * Make the curly-slab shape of `R`, `v`, `x` and `y` more distinctive (#591, #609).
- * Add U+02BE MODIFIER LETTER RIGHT HALF RING and U+02BF MODIFIER LETTER LEFT HALF RING (#588).
- * Add variant `v-capital-b-more-asymmetric` (`VXAQ`) for `B` for better differentiation with `8` (#589).
- * Fix inconsistent stroke widths in heavy delta-like components (#593).
- * Made the ties move further away from above marks, and implement diacritics above ties (#596).
- * Add variants for `4`, `7`, `6`, `9`, `q` and `z` (#595).
- * Fix missing slab on `v-u-without-bar` (#601).
- * Change shape of U+0192 for better differentiation (#611).
-
-
-### 3.1.1
-
- * Fix localized form of U+045D (#560).
- * Fix broken shape of R under CV83 (#561).
- * Fix broken shape of U+235d (#563).
- * Fix broken shape of U+0494, U+0495 (#564).
- * Fix missing serif of U+1DB2 (#565).
- * Fix incorrect serifs of Sho (U+03F8, #568).
-
-
-### 3.1.0
-
- * Add Pitman duodecimal digits (#483).
- * Add proper support for IPA tone letters (#508).
- * Moved low caret upward a little to make it more legible (#526).
- * Add support for WHITE SUN WITH RAYS (U+263C, ☼, #521).
- * Add preview image building in release notes.
- * Added `v-underscore-above-baseline` (`cv99`) and redefined the `v-underscore-high` to the right-below-baseline variant (#515).
- * Match styles of `1` and `7` in `ss##` variants (#539).
- * Refine the width of `A` and `V`.
- * Changed the layout of character variants sample image for better clarity.
- * Fix `head.fontRevision` computation (#545).
- * Add Cyrillic Ghe-with-hook and En-Ghe (#540).
- * Fix typo of `v-l-zshaped`'s description (#547).
- * Add long-dotted zero (#437).
- * Fix broken long ligature at beginning of line in macOS TextEdit (#548).
- * Add `v-eszet-longs-s-lig` (#455).
- * Make `cv##` and `ss##` features work on enclosed/braced/superscript/subscript letters (#516).
- * Add playback symbols.
- * Add `f` with straight tail (`v-f-straight-tailed`, `VXAD`, #519).
- * Fix the position of the bar in U+1E9D LATIN SMALL LETTER LONG S (#558).
-
-
-### 3.0.1
-
- * Fixed incorrect influence of Latin character variant features on Bulgarian Cyrillic (#532).
- * Added TTC-only packages back.
-
-
-### 3.0.0
-
- * Fix missing mapping regression of U+1D0D (#510).
- * Fix dot removal on various derived glyphs (#513).
- * Fix styling features for Bulgarian, Macedonian, or Serbian (#514).
- * Fix seam on certain Cyrillic letters with descender shape (#517).
- * Fix compatibility ligature building (#524). Also moved metric override configuration, compatibility ligature configuration and character removal configuration into build plans.
- * **Prerelease changes**
-   * **3.0.0-rc.8**
-      * Fix shape of combining small capitals (U+1DDB, U+1DDE, U+1DDF, U+1DE1, and U+1DE2; #500).
-      * Fix shape of H-cedilla (U+1E28 and U+1E29; #499).
-      * Fix incorrect mapping of U+228D (was U+228E) (#501).
-      * Fix shape of U+0478 and U+0479 (#503).
-      * Fix broken shape of R-stroke (#504).
-      * Fix shape of U+21B9 (#505).
-      * Change feature name `fwid` → `WWID`, `hwid` → `NWID`.
-      * Fix Iosevka Curly's default mapping of `@` (#509).      
-   * **3.0.0-rc.7**
-      * Fixed phonetic ligatures' shape. Now they are connected more closely (#488).
-      * Fix shape of U+AB30, U+AB64 and U+1DE7 (#489).
-      * Fix export of U+478 and U+479.
-      * Fix shape of U+029A, U+1D08, U+1D4C (#491).
-      * Add U+AB66 and U+AB67 (#488).
-      * Fix shape of U+1DF0 (#497).      
-   * **3.0.0-rc.6**
-      * Add IEC power symbol.
-      * Add straight lambda (`λ`) shape, and corresponded variant selector `cv94`. Old shape is placed under `cv95` (#467).
-      * Add U+2423 `OPEN BOX` (`␣`) (#469).
-      * Add Bashkir Ka (U+04A0, U+04A1) (#441).
-      * Fixed mapping for U+028C, U+034D.
-      * Fixed the thickness of thick arrows under full width.
-      * Fixed missing `TM` and `SM` symbol.
-      * Fixed weight of dotted numbers.
-      * Fix APL symbols' metric under Aile.
-      * Make `m.short-leg` more distinctive (#471).
-      * Add ligation for waved double-headed-arrow (#475).
-      * Expand the ligation set for colons to all dotty operators (#476).
-      * Added variants for `9` like a turned `6` (#363).      
-   * **3.0.0-rc.5**
-      * Add reverse-slashed zero (#438).
-      * Add U+1F8B0 and U+1F8B1 (#459).
-      * Fixed broken shape around `srtail`, `Sswash` and `sswash`.
-      * Fix `no-cv-ss` building (#460).
-      * Retrocomputing symbols are now defaults to half-width.
-      * Made variant selectors work for turned letters.
-      * Make `ligset-dlig` usable from custom build (#463).      
-   * **3.0.0-rc.4**
-      * Fix OTL script tag of default script (`dflt` -> `DFLT`). Though most shaping engine would not be impacted by the incorrect tag in earlier versions.
-      * Add large brackets (U+239B ... U+23AD) and extensible integral symbols (U+2320, U+2321, U+23AE).
-      * Add arrow U+21DE, U+21DF, U+2908, U+2909.
-      * Add logical symbol U+22A9, U+22AA, U+22AB, U+22AE, U+22AF.
-      * Cancelled ligation around regex look-around.
-      * Implement thousand-digit grouping under `THND` feature.
-      * Shape refinements of digit `1` and `6`.      
-   * **3.0.0-rc.3**
-      * Fix shape of `smcpGhooktop` (U+029B) and `uogonek.withoutBar`.
-      * Make the dotless `i` and `j` CCMP feature work for more related characters and stylized forms.
-      * Fix substitution of i-ogonek and upper combining marks.
-      * Fix broken shape of tildes.
-      * Fix broken degree-C and degree-F ligature.
-      * Fix broken cup (`∪`) and cap (`∩`) symbol.      
-   * **3.0.0-rc.2**
-      * Change the glyph shape for U+1E10 “Ḑ” and U+1E11 “ḑ” to D-comma rather than D-cedilla.
-      * Add toothless `G`.
-      * Rename private feature tags to follow [OTSpec’s vendor-specific tag guide](https://docs.microsoft.com/en-us/typography/opentype/spec/featuretags).      
-   * **3.0.0-rc.1**
-      * The packaging and spacing is significantly changed:
-         * `Iosevka` → Kept, but made arrows and geometric symbols wide.
-         * `Iosevka Term` → `Iosevka Fixed`.
-         * `Iosevka TermLig` → `Iosevka Term`.
-         * `Iosevka Type` → Removed.
-         * `Iosevka CC` → Removed.
-      * Fix “Lucida” style's `one` character.
-      * Added weight “Book”.
-      * Fix broken shape of heavy curly V, etc.
-      * Improve double-line arrow ligations.
-      * Add diamond-shaped `<>` ligation, and enabled that for Haskell.
-      * Added bar-less `u` variants, and JetBrains Mono:
-         * Assigned `cv90` to this variant.
-         * Assigned `ss14` to the stylistic set.      
-   * **3.0.0-beta.3**
-      * Made the curly-bar variant via OpenType tag `ss20`.
-      * Alias U+2B95 to U+27A1.
-      * Add symbol U+22DA, U+22DB, U+23B0, U+23B1, etc.
-      * Finished the unicode block that supports retro computer characters.
-      * Building: The shape weight is now a continuous space.      
-   * **3.0.0-beta.2**
-      * Fix horn connection on O-horn with tone marks: `Ờ ờ Ớ ớ Ở ở Ỡ ỡ Ợ ợ`.
-      * Optimize the anchor position of `R` and `ɏ` (U+024F).      
-   * **3.0.0-beta.1**
-      * Fix the shape of `Rrotunda` (U+A75A) and `rrotunda` (U+A75B).
-      * Make curly `k` under Slab variants look more different than the straight ones.
-      * Fixed minor stroke overflow on `A`.
-      * Fix O-hook connection.
-      * Add more math symbols (`≺`, `≻`, `⊏`, `⊐`, etc.) for Agda.      
-   * **3.0.0-alpha.5**
-      * Made hooks' terminal flat, which applies to `a`, `c`, `e`, etc.
-      * Add variant selector for `f`: `v-f-serifed`.
-      * Add variant selectors for `r`: `v-r-standard`, `v-r-serifed`, `v-r-top-serifed`.
-      * Fix various `r`-related glyphs' shape.
-      * Fix shape of cursive `k` under Slab shape.
-      * Fix Bulgarian Tse shape.
-      * Add `fwid` and `hwid` for Powerline.
-      * Default `g` to single-storey.      
-   * **3.0.0-alpha.4**
-      * Added three-line ligation of `===` and `!==` for JavaScript, PHP, etc.
-      * Default ligature set selector: `ligset-javascript` and `ligset-php`.
-      * Cherry-picking configuration selector: `eqeqeq` and `exeqeq`.
-      * OpenType tags: `XJS0`, `XPHP`.
-      * Exposed curly-vs-straight letterform selectors.
-      * OpenType tags are from `cv70` to `cv83`.
-      * Fixed style linking for extended variants.      
-   * **3.0.0-alpha.3**
-      * Added ligation for `~>`, `<~`, `~~>`, etc.
-      * Further refined the shapes of APL symbols.
-      * Added old-style numbers. Feature `onum` and `lnum` are enabled.      
-   * **3.0.0-alpha.2**
-      * Extended width will be built automatically and integrate into existing families.
-      * Added more letter-like symbols: `⅋`, `ℂ`, `ℍ`, `ℙ`, `ℕ`, `ℚ`, `ℝ`, `ℤ`, `ℵ`, `ℶ`.
-      * Refine the height of brackets and symbols.
-      * Renamed various variant selectors:
-         * `v-m-longleg` → `v-m-normal`
-         * `v-one-hooky` → `v-one-nobase`
-         * `v-one-serifed` → `v-one-base`
-         * `v-seven-normal` → `v-seven-noserif`
-         * `v-seven-force-serifed` → `v-seven-serifed`
-      * Added `v-lig-ltgteq-flat` (`cv66`) and `v-lig-ltgteq-slanted` (`cv67`) to change the shape of `<=` and `>=` ligation.      
-   * **3.0.0-alpha.1**
-      * The letters `k`, `x`, `v`, `A`, etc. will now use straight legs by default. The “curly” families will keep the old shape.
-      * Note this is a parameter difference rather than variant. So there won’t be a `cv##` or `ss##` variant selector.
-      * Introduced a curly italic `k` with untagged variant `v-k-italic`.
-      * Introduced `ss12` OpenType tag for Ubuntu-Mono style as well as a prebuilt `SS12` family.
+   - All remaining letters in Cyrillic block, including:
+     - Cyrillic Iotified E (`U+0464`, `U+0465`).
+     - Cyrillic Omega (`U+0460`, `U+0461`), Ot (`U+047E`, `U+047F`).
+     - Cyrillic Psi (`U+0470`, `U+0471`).
+     - Cyrillic Broad On (`U+047A`, `U+047B`).
+     - Cyrillic combining Dasia (`U+0485`), Psili (`U+0486`), Pokrytie (`U+0478`).
+     - Cyrillic Ornate Omega (`U+047C`, `U+047D`).
+     - Cyrillic Koppa (`U+0480`, `U+0481`).
+     - Cyrillic Semi-soft Sign (`U+048C`, `U+048D`).
+     - Cyrillic Er with Tick (`U+048E`, `U+048F`).
+     - Cyrillic tailed Short I (`U+048A`, `U+048B`), tailed El (`U+04C5`, `U+04C6`), railed En (`U+04C9`, `U+04CA`), tailed Em (`U+04CD`, `U+04CE`).
+     - Cyrillic Ka with Vertical Stroke (`U+049C`, `U+049D`).
+     - Cyrillic Ka with Stroke (`U+049E`, `U+049F`).
+     - Cyrillic Pe with Middle Hook (`U+04A6`, `U+04A7`).
+     - Cyrillic Abkhasian Ha (`U+04A8`, `U+04A9`).
+     - Cyrillic Te-Tse (`U+04B4`, `U+04B5`).
+     - Cyrillic Abkhazian Che (`U+04BC` ... `U+04BF`).
+     - Cyrillic Ka with Hook (`U+04C3`, `U+04C4`).
+     - Cyrillic Ghe with Stroke and Hook (`U+04FA`, `U+04FB`).
+     - Cyrillic Ha with Hook (`U+04FC`, `U+04FD`).
+     - Cyrillic Ha with Stroke (`U+04FE`, `U+04FF`).
+   - Extended Cyrillic letters, including:
+     - Cyrillic Reversed Ze (`U+0510`, `U+0511`).
+     - Cyrillic El with Hook (`U+0512`, `U+0513`).
+     - Cyrillic Pe with Descender (`U+0524`, `U+0525`).
+     - Cyrillic Shha with Descender (`U+0526`, `U+0527`).
+     - Cyrillic El with Descender (`U+052E`, `U+052F`).
+     - Broad Omega (`U+A64C`, `U+A64D`).
+   - Low asterisk (`U+204E`) and double asterisk (`U+2051`).
+   - Turned Sans-serif Capital L (`U+2142`).
+   - Turned Sans-serif Capital Y (`U+2144`).
+   - Measured Angle (`U+2221`).
+   - Spherical Angle (`U+2222`).
+   - Homothetic (`U+223B`).
+   - Sine Wave (`U+223F`).
+   - Wreath Product (`U+2240`).
+   - Between Symbol (`U+226C`).
+   - Intercalate Symbol (`U+22BA`).
+   - Right Angle with Arc (`U+22BE`).
+   - Element Of with Overbar (`U+22F6`).
+   - Small Element Of with Overbar (`U+22F7`).
+   - Contains with Overbar (`U+22FD`).
+   - Small Contains with Overbar (`U+22FE`).
+   - Helm symbol (`U+2388`).
+   - Heavy Black Heart (`U+2764`) (#920).
+   - Squared Three D ... Squared VOD (`U+1F19B` ... `U+1F1AC`).
+ * Add variants and stylistic sets:
+   - Add tailed variants for Cyrillic El, En, Che, Yery and Ya (#972).
+   - Add more serifed variants for `K`, `k`, `n`, Cyrillic Ka (`К` and `к`) and Cyrillic Ef (`ф`) to better reproduce PT Mono (#986).
+   - Add top-left serifed variant for `m` (#1052).
+   - Add descending variants for Long-S and Eszet (#1070).
+   - Add SS18 to represent Input Mono (#990).
+ * Fixes of variant selector application on derived letters or letter forms, including:
+   - Cyrillic En (#1006).
+   - Small U with Retroflex Hook (`U+1D99`) and Capital T with Retroflex Hook (`U+01AE`) (#1008).
+   - Derivatives of Latin Small Letter L (#1015).
+   - Latin Small Ligature Fi (`U+FB01`), Latin Small Ligature Fl (`U+FB02`) (#1015).
+   - Latin Small Letter Ue (`U+1D6B`) (#1022).
+   - Latin Capital Letter AE (`U+00C6`), Latin Capital Letter OE (`U+0152`) and derivatives (#1031).
+   - Polytonic Greek letters with dual-diacritics (#1031).
+   - Latin Capital B with Stroke (`U+0243`) and derivatives (#1033).
+   - Latin Capital Letter F with Hook (`U+0191`) (#1038).
+   - Latin Capital Letter K with Hook (`U+0198`), Latin Small Letter K with Hook (`U+0199`) (#1042).
+   - Naira Sign (`U+20A6`) (#1045).
+   - Greek Lunate Sigma (`U+03F9`) and derivatives (#1046).
+   - P with Hook (`U+01A4`), Ruble sign (`U+20BD`) (#1047).
+   - Yr (`U+01A6`), R-rotunda (`U+A75A`, `U+A75B`) (#1049).
+   - Hwair (`U+01F6`), Cyrillic Capital Nje (`U+040A`) (#1059).
+   - Cyrillic Izhitsa (`U+0474`) (#1061).
+   - Latin Capital Letter W with Hook (`U+2C72`), Latin Small Letter W with Hook (`U+2C73`) (#1062).
+   - Latin Small Letter with Palatial Hook (`U+01AB`), Latin Small Letter T with Hook (`U+01AD`), Latin Small Letter T with Retroflex Hook (`U+0288`),
+   - Latin Small Letter FEng Digraph (`U+02A9`) (#1063)
+   - Latin Small Letter Reversed Open E with Hook (`U+025D`) (#1063).
+   - Latin Capital Letter Z with Swash Tail (`U+2C7F`), Latin Small Letter Z with Swash Tail (`U+0240`) (#1064).
+   - Latin Small Letter D with Curl (`U+0221`), Latin Small Letter D with Tail (`U+0256`), Latin Small Letter D with Hook and Tail (`U+1D91`) (#1067).
+   - Interrobang (`U+203D`), APL Functional Symbol Quad Question (`U+2370`), Inverted Interrobang （`U+2E18`) (#1075).
+   - Latin Small Letter N with Long Leg (`U+019E`), Latin Capital Letter N with Lon gLeg (`U+0220`).
+   - Latin Small Letter N with Curl (`U+0235`).
+   - Latin Small Letter T with Curl (`U+0236`).
+   - Latin Small Letter J with Curl (`U+029D`).
+   - Latin Capital Letter Turned M (`U+019C`), Latin Small Letter Turned M (`U+026F`), Latin Small Letter Turned M with Long Leg (`U+0270`), Latin Small Letter M with Hook (`U+0271`).
+   - Latin Small Letter G with Hook (`U+0260`), Latin Small Letter Script G (`U+0261`).
+   - Latin Small Letter Turned H (`U+0265`), Latin Small Letter H with Hook (`U+0266`), Latin Small Letter Heng with Hook (`U+0267`).
+ * Fix incorrect or inconsistent serifs for Slab, including:
+   - Cyrillic Small Capital El (`U+1D2B`) (#1014).
+   - Latin Capital Reversed E (`U+018E`) and Modifier Capital Reversed E (`U+1D32`) (#1016).
+   - Modifier Cyrillic En (`U+1D78`) under Italic (#1017).
+   - Turned Sans-Serif Capital G (`U+2141`) (#1019).
+   - Micro Sign (`U+00B5`) (#1025).
+   - All mathematical sans-serif letters under any CV/SS application (#1030).
+ * Geometry fixes:
+   - Fix misplaced descender on Cyrillic Small Letter Te with Descender (`U+04AD`) (#1005).
+   - Fix gap in the curly variant of R-rotunda (`U+A75A`, `U+A75B`) (#1012).
+   - Fix incorrect shape of Modifier Letter Capital H with Stroke (`U+A7F8`) (#1024).
+   - Fix shape of Copyleft Symbol (`U+1F12F`) (#1034).
+   - Fix incorrect mapping of Greek Small Reversed Lunate Sigma Symbol (`U+037B`) and Greek Capital Reversed Lunate Sigma Symbol (`U+03FD`) (#1036).
+   - Fix incorrect shape of Symbol For Device Control One (`U+2411`) (#1037).
+   - Fix incorrect glyph shape mapping of Up Right Diagonal Ellipsis (`U+22F0`) and Down Right Diagonal Ellipsis (`U+22F1`) (#1039).
+   - Fix missing dot on Latin Small Letter I with Stroke (`U+0268`) and Modifier Letter Small I with Stroke (`U+1DA4`) (#1043, #1066).
+   - Fix incorrect slope of Circled Italic Latin Capital C (`U+1F12B`) and Circled Italic Latin Capital R (`U+1F12C`) (#1051).
+   - Fix wrong glyphs for Letter Tone Five (`U+01BC`, `U+01BD`) (#1074).
+   - Fix top hooks on some phonetic letters (`U+0253`, `U+0266`, `U+0267`, `U+01A5`) (#1072).
+   - Fix geometry of mathematical tileable brackets and integral signs in Italic/Oblique (#1076).
+   - Fix geometry of Latin Small Letter Tone Six (`U+0185`) to follow L2/19-201 (#1078).
+ * Geometry refinements:
+   - Balance stroke width of curly W/w in bold weights (#1011).
+   - Increase visibility of Cyrillic Descender (#1018).
+   - Increase oval size of Cyrillic Be (`U+0431`) (#1023).
+   - Make lowercase Cyrillic Em wider (Aile/Etoile) (#1028).
+   - Make combining parentheses more significant (#1032).
+   - Latin Small Letter Schwa with Hook (`U+025A`), Latin Small Letter Reversed Open E with Hook (`U+025D`) (#1063).
+ * Refine mark placement:
+   - `E`, `t` and `r` (#1063).
 

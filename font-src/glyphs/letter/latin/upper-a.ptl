@@ -1,8 +1,7 @@
 $$include '../../../meta/macros.ptl'
 
 import [mix linreg clamp fallback] from '../../../support/utils'
-import [DesignParameters] from '../../../meta/aesthetics'
-import [Dotless CvDecompose] from "../../../support/gr"
+import [Dotless CvDecompose MathSansSerif] from "../../../support/gr"
 
 glyph-module
 
@@ -10,68 +9,84 @@ glyph-block Letter-Latin-Upper-A : begin
 	glyph-block-import CommonShapes
 	glyph-block-import Common-Derivatives
 	glyph-block-import Marks : markHalfStroke
+	glyph-block-import Letter-Shared : SetGrekUpperTonos
+	glyph-block-import Letter-Shared-Shapes : SerifFrame
 	glyph-block-import Letter-Latin-V : VShapeOutline VShape
 	glyph-block-export LambdaShape AMaskShape DeltaShape
+
+	define SLAB-NONE    0
+	define SLAB-TOP     1
+	define SLAB-BASE    2
+	define SLAB-TRI     3
 
 	define [AMaskShape df top sw barStraight] : new-glyph : glyph-proc
 		include : VShapeOutline df top sw barStraight
 		include : FlipAround ([DivFrame df.div].width / 2) (top / 2)
 
-	create-glyph : glyph-proc
-		include : MarkSet.capital
-		set-base-anchor 'trailing' (RightSB - markHalfStroke) 0
+	define [ABarPosition slab top] : mix [if fBaseSlabs Stroke 0] top (XH / 2 / CAP)
 
-		define ABarPosition : mix [if SLAB Stroke 0] CAP (XH / 2 / CAP)
+	define AConfig : object
+		straightSerifless     { true   SLAB-NONE false }
+		curlySerifless        { false  SLAB-NONE false }
+		straightTopSerifed    { true   SLAB-TOP  false }
+		curlyTopSerifed       { false  SLAB-TOP  false }
+		straightBaseSerifed   { true   SLAB-BASE true  }
+		curlyBaseSerifed      { false  SLAB-BASE true  }
+		straightTriSerifed    { true   SLAB-TRI  true  }
+		curlyTriSerifed       { false  SLAB-TRI  true  }
 
-		create-derived 'A.straight' : glyph-proc
-			include : VShape [DivFrame 1] CAP Stroke true (slab -- SLAB)
-			include : FlipAround Middle (CAP / 2)
-			include : intersection
-				HBarTop 0 Width ABarPosition
-				AMaskShape [DivFrame 1] CAP Stroke true
+	define [ASerifs df top fBaseSlabs kind] : glyph-proc : begin
+		local sf : SerifFrame top 0 df.leftSB df.rightSB
+		if fBaseSlabs : include : composite-proc sf.lb.full sf.rb.full
+		match kind
+			[Just SLAB-TRI] : begin
+				include : LeftwardTopSerif df.middle top (MidJutSide + Stroke * HVContrast * 0.25)
+			[Just SLAB-TOP] : begin
+				include : LeftwardTopSerif df.middle top [mix MidJutSide LongJut 0.5]
 
-		create-derived 'A.curly' : glyph-proc
-			include : VShape [DivFrame 1] CAP Stroke false (slab -- SLAB)
-			include : FlipAround Middle (CAP / 2)
-			include : intersection
-				HBarTop 0 Width ABarPosition
-				AMaskShape [DivFrame 1] CAP Stroke false
+	foreach { suffix { fStraightBar slabKind fBaseSlabs } } [Object.entries AConfig] : do
+		define [AShapeImpl mak top fGrek] : glyph-proc
+			local df : DivFrame 1
+			include : df.markSet.(mak)
+			set-base-anchor 'trailing' (df.rightSB - markHalfStroke) 0
+			if fGrek : include : SetGrekUpperTonos
+				[if (slabKind === SLAB-TOP || slabKind === SLAB-TRI) 0 0.2] * (df.rightSB - df.leftSB)
+			include : VShape df top Stroke fStraightBar
+			include : FlipAround Middle (top / 2)
+			define yBar : ABarPosition fBaseSlabs top
+			include : intersection [HBarTop 0 Width yBar] [AMaskShape df top Stroke fStraightBar]
+			include : ASerifs df top fBaseSlabs slabKind
 
-		create-derived 'A.straightMotionSerifed' : glyph-proc
-			include : VShape [DivFrame 1] CAP Stroke true (slab -- false)
-			include : FlipAround Middle (CAP / 2)
-			include : LeftwardTopSerif Middle CAP [mix MidJutSide LongJut 0.5]
-			include : intersection
-				HBarTop 0 Width ABarPosition
-				AMaskShape [DivFrame 1] CAP Stroke true
-
-		create-derived 'A.curlyMotionSerifed' : glyph-proc
-			include : VShape [DivFrame 1] CAP Stroke false (slab -- false)
-			include : FlipAround Middle (CAP / 2)
-			include : LeftwardTopSerif Middle CAP [mix MidJutSide LongJut 0.5]
-			include : intersection
-				HBarTop 0 Width ABarPosition
-				AMaskShape [DivFrame 1] CAP Stroke false
+		create-glyph "A.\(suffix)" : AShapeImpl "capital" CAP
+		create-glyph "grek/Alpha.\(suffix)" : AShapeImpl "capital" CAP true
+		create-glyph "smcpA.\(suffix)" : AShapeImpl "e" XH
 
 	select-variant 'A' 'A'
-	alias 'grek/Alpha' 0x391 'A'
+	link-reduced-variant 'A/sansSerif' 'A' MathSansSerif
+	select-variant 'smcpA' 0x1D00 (follow -- 'A')
+	select-variant 'grek/Alpha' 0x391 (follow -- 'A')
+	link-reduced-variant 'grek/Alpha/sansSerif' 'grek/Alpha' MathSansSerif (follow -- 'A/sansSerif')
 	alias 'cyrl/A' 0x410 'A'
 	turned 'turnA' 0x2C6F 'A' Middle (CAP / 2)
 
 	# Lambda
 	define [LambdaShape] : params [df top sw barStraight [slab SLAB]] : glyph-proc
-		include : VShape df top sw barStraight (slab -- false)
+		include : VShape df top sw barStraight
 		include : FlipAround df.middle (top / 2)
-		if slab : begin
-			include : tagged 'serif' : CenterBottomSerif (SB + sw / 2 * HVContrast) 0 Jut
-			include : tagged 'serif' : CenterBottomSerif (RightSB - sw / 2 * HVContrast) 0 Jut
+		local sf : SerifFrame top 0 df.leftSB df.rightSB
+		include : NeedSlab slab : composite-proc sf.lb.full sf.rb.full
 
 	create-glyph 'grek/Lambda.straight' : composite-proc [MarkSet.capital]
 		LambdaShape [DivFrame 1] CAP Stroke true
 	create-glyph 'grek/Lambda.curly' : composite-proc [MarkSet.capital]
 		LambdaShape [DivFrame 1] CAP Stroke false
+	create-glyph 'grek/smcpLambda.straight' : composite-proc [MarkSet.e]
+		LambdaShape [DivFrame 1] XH Stroke true
+	create-glyph 'grek/smcpLambda.curly' : composite-proc [MarkSet.e]
+		LambdaShape [DivFrame 1] XH Stroke false
 
 	select-variant 'grek/Lambda' 0x39B
+	select-variant 'grek/smcpLambda' 0x1D27 (follow -- 'grek/Lambda')
 	alias 'latinLambda' 0x245 'grek/Lambda'
 
 	# Delta
@@ -80,11 +95,6 @@ glyph-block Letter-Latin-Upper-A : begin
 		intersection
 			HBarBottom 0 Width 0 sw
 			AMaskShape df top sw barStraight
-		if [not SLAB] [glyph-proc] : difference
-			union
-				LeftwardBottomSerif SB 0 SideJut
-				RightwardBottomSerif RightSB 0 SideJut
-			AMaskShape df top sw barStraight
 
 	create-glyph 'grek/Delta.straight' : composite-proc [MarkSet.capital]
 		DeltaShape [DivFrame 1] CAP Stroke true
@@ -92,6 +102,15 @@ glyph-block Letter-Latin-Upper-A : begin
 		DeltaShape [DivFrame 1] CAP Stroke false
 
 	select-variant 'grek/Delta' 0x394
+
+	derive-glyphs 'cyrl/De.BGR' null 'grek/Delta' : function [src sel] : glyph-proc
+		include [refer-glyph src] AS_BASE ALSO_METRICS
+		local descenderOverflow : if SLAB SideJut ((RightSB - SB) * 0.075)
+		local xCutLeft SB
+		local xCutRight RightSB
+		include : HBarBottom (xCutLeft - descenderOverflow) (xCutRight + descenderOverflow) 0
+		include : VBarLeft (xCutLeft - descenderOverflow) (-LongJut + HalfStroke) Stroke
+		include : VBarRight (xCutRight + descenderOverflow) (-LongJut + HalfStroke) Stroke
 
 	glyph-block-import Letter-Blackboard : BBS BBD
 	glyph-block-import Letter-Latin-V : BBVShape BBVInnerMaskShape

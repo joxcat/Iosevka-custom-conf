@@ -23,15 +23,16 @@ ipc.on("complete", function () {
 
 const captureCallbacks = {
 	cbAmendLigsetSamplerContents,
-	cbAmendStylisticSetContents
+	cbAmendStylisticSetContents,
+	cbAmendCharacterVariantContents
 };
 
 const ssStrings = [
 	["ABC.DEF.GHI.JKL.MNO.PQRS.TUV.WXYZ", "abc.def.ghi.jkl.mno.pqrs.tuv.wxyz"],
-	["1234567890 ,._-+= >< ¯-¬_ >~–÷+×<", "{}[]()<> $*-+=/#_%^@\\&|~?'\" !,.;:"],
+	["¢ ſ ß ΓΛΔ αδιλξ КУЗЯ эльф язычник", "float il1[]={1-2/3.4,5+6=7/8%90};"],
+	["1234567890 ,._-+= >< ¯-¬_ >~–÷+×<", "{}[]()<>`+-=$*/#_%^@\\&|~?'\" !,.;:"],
 	["!iIlL17|¦ coO08BbDQ $5SZ2zsz 96G&", [..."dbqp E3 g9q CGQ vvw VVW /V ", "<=", " ", ">="]]
 ];
-
 function cbAmendStylisticSetContents(element, p) {
 	element.innerHTML = "";
 	const inner = document.createElement("div");
@@ -72,25 +73,39 @@ function cbAmendLigsetSamplerContents(element, p) {
 		element.appendChild(line);
 		for (let m = 0; m < row.length; m++) {
 			if (m > 0) line.appendChild(document.createTextNode(" "));
-			const item = row[m];
+			const sampleStr = row[m];
 			let rank = 0;
-			for (let k = item.tags.length; k-- > 0; ) {
-				if (groupSet.has(item.tags[k])) {
-					rank = k + 1;
-					break;
-				}
+			for (const [lgName, lg] of Object.entries(auxData.ligationCherry)) {
+				if (!groupSet.has(lg.ligGroup)) continue;
+				if (!new Set(lg.samples || []).has(sampleStr)) continue;
+				const rankT = lg.sampleRank || 1;
+				if (rankT > rank) rank = rankT;
 			}
 			if (rank) {
 				const run = document.createElement("em");
-				run.appendChild(document.createTextNode(item.s));
+				run.appendChild(document.createTextNode(sampleStr));
 				run.className = `rank-${rank}`;
 				line.appendChild(run);
 			} else {
 				const run = document.createElement("s");
-				run.appendChild(document.createTextNode(item.s));
+				run.appendChild(document.createTextNode(sampleStr));
 				run.className = `rank-${rank}`;
 				line.appendChild(run);
 			}
+		}
+	}
+}
+
+function cbAmendCharacterVariantContents(element, p) {
+	element.innerHTML = "";
+	const slopeClasses = p.slopeDependent ? ["run", "run italic"] : ["run"];
+	element.style.width = p.hotChars.length * slopeClasses.length + "em";
+	for (const s of p.hotChars) {
+		for (const slopeCls of slopeClasses) {
+			const run = document.createElement("span");
+			run.className = slopeCls;
+			run.appendChild(document.createTextNode(s));
+			element.appendChild(run);
 		}
 	}
 }
@@ -99,8 +114,12 @@ function captureElement(options, callback) {
 	window.scroll(0, 0);
 	setTimeout(function () {
 		const element = document.querySelector(options.el);
-		if (options.applyClass) element.className = options.applyClass;
-		if (options.applyFeature) element.style = "font-feature-settings:" + options.applyFeature;
+		if (options.applyClass) {
+			element.className = options.applyClass;
+		}
+		if (options.applyFeature) {
+			element.style = "font-feature-settings:" + options.applyFeature;
+		}
 		if (options.applyCallback) {
 			captureCallbacks[options.applyCallback](element, options.applyCallbackArgs);
 		}

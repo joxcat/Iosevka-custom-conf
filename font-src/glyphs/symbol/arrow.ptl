@@ -1,9 +1,6 @@
-###### GEOMETRIC SHAPES
 $$include '../../meta/macros.ptl'
 
-import '../../support/transform' as Transform
 import [mix linreg clamp fallback] from '../../support/utils'
-import [DesignParameters] from '../../meta/aesthetics'
 
 glyph-module
 
@@ -26,6 +23,7 @@ glyph-block Symbol-Arrow : for-width-kinds WideWidth1
 	define halfArrowSw : arrowSw / 2
 	define fine : AdviceStroke 3.5
 	define terminal : AdviceStroke 5
+	define halfTerminal : terminal / 2
 	define doubleArrowStemWidth : arrowHeadSize * 1.1
 	define waveArrowAmplitude : (Width - SB) * DesignParameters.arrow_size * 1.1
 
@@ -65,6 +63,15 @@ glyph-block Symbol-Arrow : for-width-kinds WideWidth1
 				g4 (mag - O) (s / 2)
 				arcvh
 				flat (mag - [Math.abs s] / 2) 0
+				curl [mix mag 0 p] 0
+
+	define [SemiHookArrowBar x1 y1 x2 y2 halfSw halfFine s w] : begin
+		return : PointingTo x1 y1 x2 y2 : lambda [mag] : begin
+			local p : (mag - o - halfSw * [fallback w 1.1]) / mag
+			dispiro
+				straight.[if (s > 0) 'down' 'up'].start (mag - O) s [widths.center (halfFine * 2)]
+				arcvh
+				flat (mag - [Math.abs s] / 2) 0 [widths.center (halfSw * 2)]
 				curl [mix mag 0 p] 0
 
 	define [ArrowHead x1 y1 x2 y2 _size] : union
@@ -164,25 +171,34 @@ glyph-block Symbol-Arrow : for-width-kinds WideWidth1
 		local x1CoA : mix x1 x2 (-0.05)
 		local y1CoA : mix y1 y2 (-0.05)
 
-		if (color == "white") : return : difference
-			union
-				TriangleArrowHead x1 y1 x2 y2 headWidth headLen
-				ArrowBar x1 y1 x2 y2 (halfBarWidth + fine / 2) 2
-			union
-				TriangleArrowHead x1a y1a x2a y2a (headWidth - innerHeaderLengthShrink * headWidth / headLen) (headLen - innerHeaderLengthShrink)
-				ArrowBar x1a y1a x2a y2a (halfBarWidth - fine / 2) 2
+		return : match color
+			[Just 'white'] : difference
+				union
+					TriangleArrowHead x1 y1 x2 y2 headWidth headLen
+					ArrowBar x1 y1 x2 y2 (halfBarWidth + fine / 2) 2
+				union
+					TriangleArrowHead x1a y1a x2a y2a (headWidth - innerHeaderLengthShrink * headWidth / headLen) (headLen - innerHeaderLengthShrink)
+					ArrowBar x1a y1a x2a y2a (halfBarWidth - fine / 2) 2
 
-		if (color == "white-open") : return : difference
-			union
-				TriangleArrowHead x1 y1 x2 y2 headWidth headLen
-				ArrowBar x1 y1 x2 y2 (halfBarWidth + fine / 2) 2
-			union
-				TriangleArrowHead x1CoA y1CoA x2a y2a (headWidth - innerHeaderLengthShrink * headWidth / headLen) (headLen - innerHeaderLengthShrink)
-				ArrowBar x1CoA y1CoA x2a y2a (halfBarWidth - fine / 2) 2
+			[Just "white-open"] : difference
+				union
+					TriangleArrowHead x1 y1 x2 y2 headWidth headLen
+					ArrowBar x1 y1 x2 y2 (halfBarWidth + fine / 2) 2
+				union
+					TriangleArrowHead x1CoA y1CoA x2a y2a (headWidth - innerHeaderLengthShrink * headWidth / headLen) (headLen - innerHeaderLengthShrink)
+					ArrowBar x1CoA y1CoA x2a y2a (halfBarWidth - fine / 2) 2
 
-		if (color == "black") : return : union
-			TriangleArrowHead x1 y1 x2 y2 headWidth headLen
-			ArrowBar x1 y1 x2 y2 halfBarWidth 2
+			[Just "black"] : union
+				TriangleArrowHead x1 y1 x2 y2 headWidth headLen
+				ArrowBar x1 y1 x2 y2 halfBarWidth 2
+
+			[Just "blackSemiHookR"] : union
+				TriangleArrowHead x1 y1 x2 y2 headWidth headLen
+				SemiHookArrowBar x1 y1 x2 y2 halfBarWidth halfTerminal headWidth 2
+
+			[Just "blackSemiHookL"] : union
+				TriangleArrowHead x1 y1 x2 y2 headWidth headLen
+				SemiHookArrowBar x1 y1 x2 y2 halfBarWidth halfTerminal (-headWidth) 2
 
 	define [BarbArrowHead x1 y1 x2 y2 width length thickness] : new-glyph : glyph-proc
 		include : PointingTo x1 y1 x2 y2 : lambda [mag] : begin
@@ -269,6 +285,10 @@ glyph-block Symbol-Arrow : for-width-kinds WideWidth1
 		MkArrow ArrowShape [MangleName 'arrowUpRight']    [MangleUnicode 0x2197] arrowDiagSB arrowDiagBot arrowDiagRSB arrowDiagTop
 		MkArrow ArrowShape [MangleName 'arrowDownRight']  [MangleUnicode 0x2198] arrowDiagSB arrowDiagTop arrowDiagRSB arrowDiagBot
 		MkArrow ArrowShape [MangleName 'arrowDownLeft']   [MangleUnicode 0x2199] arrowDiagRSB arrowDiagTop arrowDiagSB arrowDiagBot
+
+		define kLong 0.5
+		MkArrow ArrowShape [MangleName 'longArrowLeft']   [MangleUnicode 0x27F5] [mix MosaicWidth arrowRSB kLong] SymbolMid [mix 0 arrowSB kLong] SymbolMid
+		MkArrow ArrowShape [MangleName 'longArrowRight']  [MangleUnicode 0x27F6] [mix 0 arrowSB kLong] SymbolMid [mix MosaicWidth arrowRSB kLong] SymbolMid
 
 	do "Dash Straight Arrow"
 		MkArrow DashArrowShape [MangleName 'dashArrowLeft']  [MangleUnicode 0x21E0] arrowRSB SymbolMid arrowSB SymbolMid
@@ -368,7 +388,15 @@ glyph-block Symbol-Arrow : for-width-kinds WideWidth1
 		MkArrow [HalfArrowShape LHSHalfArrowHead] [MangleName 'arrowDownHL']  [MangleUnicode 0x21C2] arrowMidX arrowTop arrowMidX arrowBot
 		MkArrow [HalfArrowShape RHSHalfArrowHead] [MangleName 'arrowDownHR']  [MangleUnicode 0x21C3] arrowMidX arrowTop arrowMidX arrowBot
 
+	do "Double Half-head Arrows (different side)"
+		DoubleArrow [HalfArrowShape RHSHalfArrowHead] [MangleName 'arrowLeftRightHR'] [MangleUnicode 0x294A] arrowSB SymbolMid arrowRSB SymbolMid
+		DoubleArrow [HalfArrowShape LHSHalfArrowHead] [MangleName 'arrowLeftRightHL'] [MangleUnicode 0x294B] arrowSB SymbolMid arrowRSB SymbolMid
+		DoubleArrow [HalfArrowShape RHSHalfArrowHead] [MangleName 'arrowUpDownHR'] [MangleUnicode 0x294C] arrowMidX arrowTop arrowMidX arrowBot
+		DoubleArrow [HalfArrowShape LHSHalfArrowHead] [MangleName 'arrowUpDownHL'] [MangleUnicode 0x294D] arrowMidX arrowTop arrowMidX arrowBot
+
+
 	do "Wave arrows"
+		glyph-block-import Shared-Symbol-Shapes : CreateWaveShape
 		define WaveSw  arrowSw
 		define WaveShape : CreateWaveShape
 			waveArrowAmplitude * 0.4 + WaveSw / 4 * MosaicWidthScalar
@@ -430,6 +458,9 @@ glyph-block Symbol-Arrow : for-width-kinds WideWidth1
 		MkArrow [ThickArrowShape 'black'] [MangleName 'uni2B0B'] [MangleUnicode 0x2B0B] arrowDiagRSB arrowDiagTop arrowDiagSB arrowDiagBot
 		DoubleArrow [ThickArrowShape 'black'] [MangleName 'uni2B0C'] [MangleUnicode 0x2B0C] arrowSB SymbolMid arrowRSB SymbolMid
 		DoubleArrow [ThickArrowShape 'black'] [MangleName 'uni2B0D'] [MangleUnicode 0x2B0D] arrowMidX arrowBot arrowMidX arrowTop
+
+		MkArrow [ThickArrowShape 'blackSemiHookL'] [MangleName 'uni27A5'] [MangleUnicode 0x27A5] arrowSB SymbolMid arrowRSB SymbolMid
+		MkArrow [ThickArrowShape 'blackSemiHookR'] [MangleName 'uni27A6'] [MangleUnicode 0x27A6] arrowSB SymbolMid arrowRSB SymbolMid
 
 	do "Barb arrows"
 		define BarbHeavyWideHeaded : BarbArrowShape 0.25 : UnicodeWeightGrade 9 MosaicWidthScalar
@@ -658,7 +689,3 @@ glyph-block Symbol-Arrow : for-width-kinds WideWidth1
 
 	if (MosaicWidthScalar == 1) : begin
 		glyph-block-export ArrowShape
-
-	if (!para.forceMonospace && MosaicNameSuffix === '.WWID') : begin
-		alias 'longArrowLeft'  0x27F5 'arrowLeft.WWID'
-		alias 'longArrowRight' 0x27F6 'arrowRight.WWID'

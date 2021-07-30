@@ -1,27 +1,27 @@
 $$include '../../meta/macros.ptl'
 
-import '../../support/transform' as Transform
+import '../../support/geometry/transform' as Transform
 
 import [mix linreg clamp fallback] from '../../support/utils'
 import [Radical] from '../../support/gr'
-import [DesignParameters] from '../../meta/aesthetics'
-import '../../support/point' as Point
 
 glyph-module
 
 glyph-block CommonShapes : begin
-	define [Rect u d l r transformShiftOnly] : new-glyph : glyph-proc
-		local my ((u + d) / 2)
-		local mx ((l + r) / 2)
-		currentGlyph.gizmo = [if transformShiftOnly [Translate 0 0] GlobalTransform]
-		include : spiro-outline
-			corner l d
-			corner l u
-			corner r u
-			corner r d
-		if transformShiftOnly : begin
-			local {.x mx1 .y my1} : GlobalTransform.apply {.x mx .y my}
-			include : Translate (mx1 - mx) (my1 - my)
+	define [Rect u d l r transformShiftOnly] : glyph-proc
+		local giz currentGlyph.gizmo
+		include : new-glyph : glyph-proc
+			local my ((u + d) / 2)
+			local mx ((l + r) / 2)
+			currentGlyph.gizmo = [if transformShiftOnly [Transform.Id] giz]
+			include : spiro-outline
+				corner l d
+				corner l u
+				corner r u
+				corner r d
+			if transformShiftOnly : begin
+				local {.x mx1 .y my1} : giz.apply {.x mx .y my}
+				include : Translate (mx1 - mx) (my1 - my)
 
 	define [SquareAt x y r] : Rect (y + r) (y - r) (x - r) (x + r)
 
@@ -31,62 +31,68 @@ glyph-block CommonShapes : begin
 	define [MaskLeft  x] : Rect VERY-FAR (-VERY-FAR) (-VERY-FAR) x
 	define [MaskRight x] : Rect VERY-FAR (-VERY-FAR) x VERY-FAR
 
-	define [Ring u d l r transformShiftOnly] : new-glyph : glyph-proc
-		local my ((u + d) / 2)
-		local mx ((l + r) / 2)
-		currentGlyph.gizmo = [if transformShiftOnly [Translate 0 0] GlobalTransform]
-		include : spiro-outline
-			g4 mx d
-			archv
-			g4 l my
-			arcvh
-			g4 mx u
-			archv
-			g4 r my
-			arcvh
-			close
-		if transformShiftOnly : begin
-			local {.x mx1 .y my1} : GlobalTransform.apply {.x mx .y my}
-			include : Translate (mx1 - mx) (my1 - my)
+	define [Ring u d l r transformShiftOnly] : glyph-proc
+		local giz currentGlyph.gizmo
+		include : new-glyph : glyph-proc
+			local my ((u + d) / 2)
+			local mx ((l + r) / 2)
+			currentGlyph.gizmo = [if transformShiftOnly [Transform.Id] giz]
+			include : spiro-outline
+				g4 mx d
+				archv
+				g4 l my
+				arcvh
+				g4 mx u
+				archv
+				g4 r my
+				arcvh
+				close
+			if transformShiftOnly : begin
+				local {.x mx1 .y my1} : giz.apply {.x mx .y my}
+				include : Translate (mx1 - mx) (my1 - my)
 	define [RingAt x y r] : Ring (y + r) (y - r) (x - r) (x + r)
 	define [DotAt x y r] : Ring (y + r) (y - r) (x - r) (x + r) true
 
-	define [RingStroke u d l r s transformShiftOnly] : new-glyph : glyph-proc
-		local my ((u + d) / 2)
-		local mx ((l + r) / 2)
-		currentGlyph.gizmo = [if transformShiftOnly [Translate 0 0] GlobalTransform]
-		include : dispiro
-			begin [lambda : set this.gizmo currentGlyph.gizmo]
-			widths.rhs [fallback s Stroke]
-			g4 mx d [heading Leftward]
-			archv
-			g4 l my
-			arcvh
-			g4 mx u [heading Rightward]
-			archv
-			g4 r my
-			arcvh
-			close
-		if transformShiftOnly : begin
-			local {.x mx1 .y my1} : GlobalTransform.apply {.x mx .y my}
-			include : Translate (mx1 - mx) (my1 - my)
+	define [RingStroke u d l r s transformShiftOnly] : glyph-proc
+		local giz currentGlyph.gizmo
+		include : new-glyph : glyph-proc
+			local my ((u + d) / 2)
+			local mx ((l + r) / 2)
+			currentGlyph.gizmo = [if transformShiftOnly [Transform.Id] giz]
+			include : dispiro
+				begin [lambda : set this.gizmo currentGlyph.gizmo]
+				widths.rhs [fallback s Stroke]
+				g4 mx d [heading Leftward]
+				archv
+				g4 l my
+				arcvh
+				g4 mx u [heading Rightward]
+				archv
+				g4 r my
+				arcvh
+				close
+			if transformShiftOnly : begin
+				local {.x mx1 .y my1} : giz.apply {.x mx .y my}
+				include : Translate (mx1 - mx) (my1 - my)
 	define [RingStrokeAt x y r s] : RingStroke (y + r) (y - r) (x - r) (x + r) s
 	define [DotStrokeAt x y r s] : RingStroke (y + r) (y - r) (x - r) (x + r) s true
 
-	define [CircleRing u d l r transformShiftOnly] : new-glyph : glyph-proc
-		local my ((u + d) / 2)
-		local mx ((l + r) / 2)
-		currentGlyph.gizmo = [if transformShiftOnly [Translate 0 0] GlobalTransform]
-		include : spiro-outline
-			begin [lambda : set this.gizmo currentGlyph.gizmo]
-			g4 mx d
-			g4 l my
-			g4 mx u
-			g4 r my
-			close
-		if transformShiftOnly : begin
-			local {.x mx1 .y my1} : GlobalTransform.apply {.x mx .y my}
-			include : Translate (mx1 - mx) (my1 - my)
+	define [CircleRing u d l r transformShiftOnly] : glyph-proc
+		local giz currentGlyph.gizmo
+		include : new-glyph : glyph-proc
+			local my ((u + d) / 2)
+			local mx ((l + r) / 2)
+			currentGlyph.gizmo = [if transformShiftOnly [Transform.Id] giz]
+			include : spiro-outline
+				begin [lambda : set this.gizmo currentGlyph.gizmo]
+				g4 mx d
+				g4 l my
+				g4 mx u
+				g4 r my
+				close
+			if transformShiftOnly : begin
+				local {.x mx1 .y my1} : giz.apply {.x mx .y my}
+				include : Translate (mx1 - mx) (my1 - my)
 	define [CircleRingAt x y r] : CircleRing (y + r) (y - r) (x - r) (x + r)
 	define [CircleDotAt x y r] : CircleRing (y + r) (y - r) (x - r) (x + r) true
 
@@ -159,6 +165,45 @@ glyph-block CommonShapes : begin
 
 	set OShape.NoOvershoot : lambda [u d l r _width _sma _smb] : OShape (u + O) (d - O) (l - OX) (r + OX) _width _sma _smb
 	set OShapeOutline.NoOvershoot : lambda [u d l r _width _sma _smb] : OShapeOutline (u + O) (d - O) (l - OX) (r + OX) _width _sma _smb
+
+	define [OShapeFlatTB u d l r _width _sma _smb gap] : glyph-proc
+		local middle : (l + r) / 2
+		local width : fallback _width Stroke
+		local sma : fallback _sma SmallSmoothA
+		local smb : fallback _smb SmallSmoothB
+		local mc : CorrectionOMidX * width
+		if (u - d > sma + smb) : then : begin
+			include : dispiro
+				flat (middle - mc) (u - O) [widths.lhs width]
+				curl (middle - mc - gap / 2) (u - O)
+				archv
+				flat (l + OX) (u - sma)
+				curl (l + OX) (d + smb)
+				arcvh
+				flat (middle + mc - gap / 2) (d + O)
+				curl (middle + mc + gap / 2) (d + O)
+				archv
+				flat (r - OX) (d + sma)
+				curl (r - OX) (u - smb)
+				arcvh
+				flat (middle - mc + gap / 2) (u - O)
+				curl (middle - mc) (u - O)
+		: else : begin
+			local ymiddlea : mix d u (smb / (sma + smb))
+			local ymiddleb : mix d u (sma / (sma + smb))
+			include : dispiro
+				flat (middle - mc) (u - O) [widths.lhs width]
+				curl (middle - mc - gap / 2) (u - O)
+				archv
+				g4 (l + OX) ymiddlea
+				arcvh
+				flat (middle + mc - gap / 2) (d + O)
+				curl (middle + mc + gap / 2) (d + O)
+				archv
+				g4 (r - OX) ymiddleb
+				arcvh
+				flat (middle - mc + gap / 2) (u - O)
+				curl (middle - mc) (u - O)
 
 	define [OBarLeftShape] : params [[top XH] [left SB] [stroke Stroke] [fine ShoulderFine]] : begin
 		local st : shoulderMidSlope fine nothing 1
@@ -290,30 +335,29 @@ glyph-block CommonShapes : begin
 		include : OBarLeftRoundedTopShape top (Width - right) (top - yTerminal)
 		include : FlipAround Middle (top / 2)
 
-	define SERIF_SHIFT_X 0.6
 	define [LeftwardTopSerif x y length _sw] : glyph-proc
 		local sw : fallback _sw Stroke
 		include : dispiro
 			flat (x + sw / 2 * HVContrast) y [widths.heading sw 0 Leftward]
-			curl (x - length - TanSlope * (sw * SERIF_SHIFT_X)) y
+			curl (x - length - TanSlope * (sw * DesignParameters.serifShiftX)) y
 
 	define [LeftwardBottomSerif x y length _sw] : glyph-proc
 		local sw : fallback _sw Stroke
 		include : dispiro
 			flat (x + sw / 2 * HVContrast) y [widths.heading 0 sw Leftward]
-			curl (x - length + TanSlope * (sw * SERIF_SHIFT_X)) y
+			curl (x - length + TanSlope * (sw * DesignParameters.serifShiftX)) y
 
 	define [RightwardTopSerif x y length _sw] : glyph-proc
 		local sw : fallback _sw Stroke
 		include : dispiro
 			flat (x - sw / 2 * HVContrast) y [widths.heading 0 sw Rightward]
-			curl (x + length - TanSlope * (sw * SERIF_SHIFT_X)) y
+			curl (x + length - TanSlope * (sw * DesignParameters.serifShiftX)) y
 
 	define [RightwardBottomSerif x y length _sw] : glyph-proc
 		local sw : fallback _sw Stroke
 		include : dispiro
 			flat (x - sw / 2 * HVContrast) y [widths.heading sw 0 Rightward]
-			curl (x + length + TanSlope * (sw * SERIF_SHIFT_X)) y
+			curl (x + length + TanSlope * (sw * DesignParameters.serifShiftX)) y
 
 	define [CenterTopSerif x y length _sw] : CenterTopSerifAsymmetric x y length length _sw
 
@@ -322,14 +366,14 @@ glyph-block CommonShapes : begin
 	define [CenterTopSerifAsymmetric x y l r _sw] : begin
 		local sw : fallback _sw Stroke
 		return : dispiro
-			flat (x + r - TanSlope * (sw * SERIF_SHIFT_X)) y [widths sw 0]
-			curl (x - l - TanSlope * (sw * SERIF_SHIFT_X)) y
+			flat (x + r - TanSlope * (sw * DesignParameters.serifShiftX)) y [widths sw 0]
+			curl (x - l - TanSlope * (sw * DesignParameters.serifShiftX)) y
 
 	define [CenterBottomSerifAsymmetric x y l r _sw] : begin
 		local sw : fallback _sw Stroke
 		return : dispiro
-			flat (x + r + TanSlope * (sw * SERIF_SHIFT_X)) y [widths 0 sw]
-			curl (x - l + TanSlope * (sw * SERIF_SHIFT_X)) y
+			flat (x + r + TanSlope * (sw * DesignParameters.serifShiftX)) y [widths 0 sw]
+			curl (x - l + TanSlope * (sw * DesignParameters.serifShiftX)) y
 
 	define VJutSw : AdviceStroke 3.5
 	define [DownwardRightSerif x y length sw] : glyph-proc
@@ -353,49 +397,8 @@ glyph-block CommonShapes : begin
 			flat x y [heading Upward]
 			curl x (y + length) [heading Upward]
 
-	define sideSerifK 0.5
-	define [JutIn left right] : Math.min Jut (HalfStroke + [Math.max (Stroke * TanSlope) ((right - left - Stroke * 2 * HVContrast) * 0.4)])
-	define [AIVSerifs top _left _right] : glyph-proc
-		local left : fallback _left SB
-		local right : fallback _right RightSB
-		local jutIn : JutIn left right
-		if SLAB : begin
-			include : tagged 'serifLT' : CenterTopSerifAsymmetric (left + Stroke * sideSerifK * HVContrast) top Jut jutIn
-			include : tagged 'serifRT' : CenterTopSerifAsymmetric (right - Stroke * sideSerifK * HVContrast) top jutIn Jut
-	define [AIHSerifs top _left _right] : glyph-proc
-		local left : fallback _left SB
-		local right : fallback _right RightSB
-		local jutIn : JutIn left right
-		if SLAB : begin
-			include : AIVSerifs top _left _right
-			include : tagged 'serifLB'
-				CenterBottomSerifAsymmetric (left + Stroke * sideSerifK * HVContrast) 0 Jut jutIn
-			include : tagged 'serifRB'
-				CenterBottomSerifAsymmetric (right - Stroke * sideSerifK * HVContrast) 0 jutIn Jut
-	define [AICyrISerifs top _left _right] : glyph-proc
-		local left : fallback _left SB
-		local right : fallback _right RightSB
-		if SLAB : begin
-			include : LeftwardBottomSerif left 0 SideJut
-			include : RightwardTopSerif right top SideJut
-			include : CenterTopSerif (left + Stroke * sideSerifK * HVContrast) top Jut
-			include : tagged 'serifRB'
-				CenterBottomSerif (right - Stroke * sideSerifK * HVContrast) 0 Jut
-	define [AIMSerifs top _left _right] : glyph-proc
-		local left : fallback _left SB
-		local right : fallback _right RightSB
-		if SLAB : begin
-			include : LeftwardTopSerif (left + Stroke * (sideSerifK - 0.5) * HVContrast) top SideJut
-			include : RightwardTopSerif (right - Stroke * (sideSerifK - 0.5) * HVContrast) top SideJut
-			include : CenterBottomSerif (left + Stroke * sideSerifK * HVContrast) 0 Jut
-			include : CenterBottomSerif (right - Stroke * sideSerifK * HVContrast) 0 Jut
-	define [WithAIHSerifsMask top bottom left right s] : if [not SLAB] s : begin
-		local leftCenter : left + HalfStroke * HVContrast
-		local rightCenter : right - HalfStroke * HVContrast
-		local adj : TanSlope * Stroke * SERIF_SHIFT_X
-		return : intersection s : union
-			Rect top [mix top bottom 0.5] (leftCenter - Jut) (rightCenter + Jut - adj)
-			Rect [mix top bottom 0.5] bottom (leftCenter - Jut + adj) (rightCenter + Jut)
+	define [NeedSlab level p] : if level p [glyph-proc]
+	define [NeedNotItalic p] : if para.isItalic [glyph-proc] p
 
 	define [DiagCor dy dx dyt dxt] : begin
 		local ay : Math.max 0 : [Math.abs dy] - [fallback dyt 0]
@@ -440,22 +443,13 @@ glyph-block CommonShapes : begin
 	define [VBarLeft x yd yu _fine] : VBar (x + [fallback _fine Stroke] * 0.5 * HVContrast) yd yu _fine
 	define [VBarRight x yd yu _fine] : VBar (x - [fallback _fine Stroke] * 0.5 * HVContrast) yd yu _fine
 
-	define [VerticalHook x y extend depth fine strg] : glyph-proc
-		include : dispiro
-			widths.center [fallback fine Stroke]
-			flat x (y + [fallback strg 0]) [heading [if (depth > 0) Downward Upward]]
-			curl x (y - [if (depth > 0) 0.01 (-0.01)]) [heading [if (depth > 0) Downward Upward]]
+	define [VerticalHook] : params [x y xDepth yDepth [sw Stroke] [xExtension 0] [yExtension 0]]
+		dispiro [widths.center sw]
+			flat x (y + yExtension) [heading [if (yDepth > 0) Downward Upward]]
+			curl x (y - [if (yDepth > 0) 0.01 (-0.01)]) [heading [if (yDepth > 0) Downward Upward]]
 			arcvh
-			flat (x + extend - [if (extend > 0) 0.01 (-0.01)]) (y - depth)
-			curl (x + extend) (y - depth)
-
-	define [LegShape] : params [ztop zbot xb [fine Stroke]] : glyph-proc
-		include : dispiro
-			widths.lhs fine
-			flat ztop.x ztop.y [heading Downward]
-			curl xb (zbot.y + LongJut)
-			alsoThruThem {{0.5 0.94}}
-			g4.left.end zbot.x (zbot.y + fine) [heading Leftward]
+			flat (x + xDepth - [if (xDepth > 0) 0.01 (-0.01)]) (y - yDepth)
+			curl (x + xDepth + xExtension) (y - yDepth)
 
 	define [LeftHook x y xextend] : glyph-proc
 		local fine : AdviceStroke 4.25
@@ -466,14 +460,6 @@ glyph-block CommonShapes : begin
 			archv 8
 			g4.down.end (x - LeftHook.extension) (y - HookX) [heading Downward]
 	set LeftHook.extension [Math.max (Width * 0.15) ([AdviceStroke 4.25] * 1.5)]
-
-	define [HooktopLeftBar] : params [stroke bottom] : glyph-proc
-		include : dispiro
-			widths.lhs [fallback stroke Stroke]
-			g4 RightSB (CAP - Hook)
-			hookstart (CAP - O)
-			flat SB (CAP - SmallSmoothA)
-			curl SB [fallback bottom 0] [heading Downward]
 
 	define [FlatSlashShape middlex middle fine kx ky] : glyph-proc
 		include : dispiro
@@ -577,26 +563,30 @@ glyph-block CommonShapes : begin
 			* keyKnot
 			* segAfter
 
+	define [hookStartBlender before after args] : begin
+		return : HookShape after before true args.y args.tight args.sw args.swItalicAdj args.noAdjTerminalY
+
+	define [hookEndBlender before after args] : begin
+		return : HookShape before after false args.y args.tight args.sw args.swItalicAdj args.noAdjTerminalY
+
 	define [hookstart] : params [y tight sw swItalicAdj noAdjTerminalY] : return {
 		.type 'interpolate'
-		.af [lambda [before after] [HookShape after before true y tight sw swItalicAdj noAdjTerminalY]]
+		.blender hookStartBlender
+		.y y
+		.tight tight
+		.sw sw
+		.swItalicAdj swItalicAdj
+		.noAdjTerminalY noAdjTerminalY
 	}
 	define [hookend] : params [y tight sw swItalicAdj noAdjTerminalY] : return {
 		.type 'interpolate'
-		.af [lambda [before after] [HookShape before after false y tight sw swItalicAdj noAdjTerminalY]]
+		.blender hookEndBlender
+		.y y
+		.tight tight
+		.sw sw
+		.swItalicAdj swItalicAdj
+		.noAdjTerminalY noAdjTerminalY
 	}
-
-	define [CyrDescender] : params [x [shift 0.1] [connex 0] [sideJut SideJut]] : glyph-proc
-		local descenderOverflow : if SLAB sideJut ((RightSB - SB) * shift)
-		include : VBarRight (x + descenderOverflow + 0.25 * Stroke) (HalfStroke - LongJut) Stroke VJutSw
-		if (!SLAB && descenderOverflow > Stroke * 0.75 || connex) : begin
-			include : HBarTop (x - connex * Stroke * HVContrast) (x + descenderOverflow) Stroke
-
-	define [CyrLeftDescender] : params [x [shift 0.1] [connex 0] [sideJut SideJut]] : glyph-proc
-		local descenderOverflow : if SLAB sideJut ((RightSB - SB) * shift)
-		include : VBarLeft (x - descenderOverflow - 0.25 * Stroke) (HalfStroke - LongJut) Stroke VJutSw
-		if (!SLAB && descenderOverflow > Stroke * 0.75 || connex) : begin
-			include : HBarTop (x + connex * Stroke * HVContrast) (x - descenderOverflow) Stroke
 
 	# Composite transformations
 	define [FlipAround x y sx sy] : glyph-proc
@@ -609,34 +599,7 @@ glyph-block CommonShapes : begin
 
 	define [Realign x y sx sy] : ApparentTranslate (sx - x) (sy - y)
 
-	define [ForceUpright] : glyph-proc [set this.gizmo : Translate 0 0]
-
-	define [CreateWaveShape dist sw _phaesShift] : begin
-		define WaveResolution 64
-		define WaveMagnitude : dist * (3 / 4) - sw / 2
-		define WaveAdj : TanSlope * WaveMagnitude * (-0.75)
-		define phaseShift : fallback _phaesShift 0
-		define [WaveShapeImpl] : params [left right ts te xsJoin xfJoin diagJoinS diagJoinF] : glyph-proc
-			local resolution : Math.ceil (WaveResolution * (te - ts))
-			local knots {}
-			foreach [pr : range 0 till resolution] : begin
-				local theta : (phaseShift + [mix ts te (pr / resolution)]) * Math.PI * 2
-				local waveRelY : (-1) * [Math.sin theta] - 0.075 * [Math.sin (theta * 3)]
-				knots.push : g2
-					(WaveAdj * waveRelY) + [mix left right (pr / resolution)]
-					SymbolMid + WaveMagnitude * waveRelY
-			include : dispiro
-				widths.center sw
-				if (xsJoin === nothing) {} :  if diagJoinS
-					list [g2                   xsJoin SymbolMid]
-					list [straight.right.start xsJoin SymbolMid]
-				begin knots
-				if (xfJoin === nothing) {} :  if diagJoinF
-					list [g2                   xfJoin SymbolMid]
-					list [straight.right.end   xfJoin SymbolMid]
-
-		define [WaveShape] : params [left right xsJoin xfJoin diagJoinS diagJoinF [waveCount 1] [unitWidth Width]] : WaveShapeImpl (unitWidth * -left) (unitWidth * (1 + right)) (-left * waveCount) ((1 + right) * waveCount) xsJoin xfJoin diagJoinS diagJoinF
-		return WaveShape
+	define [ForceUpright] : glyph-proc [set this.gizmo : Transform.Id]
 
 	define [NameUni unicode] : begin
 		local hex : [unicode.toString 16].toUpperCase
@@ -646,7 +609,7 @@ glyph-block CommonShapes : begin
 	define [PointingTo x1 y1 x2 y2 G] : glyph-proc
 		local giz this.gizmo
 		local g : new-glyph : glyph-proc
-			set this.gizmo : Translate 0 0
+			set this.gizmo : Transform.Id
 			local {.x xo .y yo} : [Transform.Id].apply {.x x1 .y y1}
 			local {.x xt .y yt} : [Transform.Id].apply {.x x2 .y y2}
 			local mag : Math.hypot (yo - yt) (xo - xt)
@@ -671,4 +634,9 @@ glyph-block CommonShapes : begin
 		corner [mix x1 x2 (-k)]  [mix y1 y2 (-k)]
 		corner [mix x1 x2 (1+k)] [mix y1 y2 (1+k)]
 
-	glyph-block-export Rect SquareAt Ring RingAt DotAt RingStroke RingStrokeAt DotStrokeAt CircleRing CircleRingAt CircleDotAt OShape OShapeOutline OBarLeftShape OBarRightShape LeftwardTopSerif LeftwardBottomSerif RightwardTopSerif RightwardBottomSerif CenterTopSerif CenterBottomSerif DownwardRightSerif UpwardRightSerif DownwardLeftSerif UpwardLeftSerif AIVSerifs AIHSerifs AICyrISerifs AIMSerifs HBar HBarTop HBarBottom HOverlayBar VBar VBarLeft VBarRight VerticalHook LegShape LeftHook HooktopLeftBar FlatSlashShape hookstart hookend CyrDescender CyrLeftDescender FlipAround ScaleAround Realign ForceUpright DiagCor CreateWaveShape NameUni PointingTo WithAIHSerifsMask WithTransform clear-anchors OBarLeftToothlessShape OBarLeftRoundedShape OBarRightToothlessShape OBarRightRoundedShape AsRadical ExtLineCenter DiagCorDs HCrossBar VERY-FAR MaskAbove MaskBelow MaskLeft MaskRight
+	define [ExtLineLhs k sw x1 y1 x2 y2] : dispiro
+		widths.lhs sw
+		corner [mix x1 x2 (-k)]  [mix y1 y2 (-k)]
+		corner [mix x1 x2 (1+k)] [mix y1 y2 (1+k)]
+
+	glyph-block-export Rect SquareAt Ring RingAt DotAt RingStroke RingStrokeAt DotStrokeAt CircleRing CircleRingAt CircleDotAt OShape OShapeOutline OShapeFlatTB OBarLeftShape OBarRightShape LeftwardTopSerif LeftwardBottomSerif RightwardTopSerif RightwardBottomSerif CenterTopSerif CenterTopSerifAsymmetric CenterBottomSerif CenterBottomSerifAsymmetric DownwardRightSerif UpwardRightSerif DownwardLeftSerif UpwardLeftSerif NeedSlab NeedNotItalic HBar HBarTop HBarBottom HOverlayBar VBar VBarLeft VBarRight VerticalHook LeftHook FlatSlashShape hookstart hookend FlipAround ScaleAround Realign ForceUpright DiagCor NameUni PointingTo WithTransform clear-anchors OBarLeftToothlessShape OBarLeftRoundedShape OBarRightToothlessShape OBarRightRoundedShape AsRadical ExtLineCenter ExtLineLhs DiagCorDs HCrossBar VERY-FAR MaskAbove MaskBelow MaskLeft MaskRight
